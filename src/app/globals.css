@@ -13,9 +13,9 @@
 :root {
   --background: #fafaf8; /* 배경 */
   --main-text: #333333; /* 텍스트 색상 */
-  --main-yellow: #FFD939; /* 메인 노랑 */
-  --bg-yellow: #FFFDEC; /* 배경 노랑 */
-  --content-yellow: #FFF399; /* 버튼에 들어가는 노랑 */
+  --main-yellow: #ffd939; /* 메인 노랑 */
+  --bg-yellow: #fffdec; /* 배경 노랑 */
+  --content-yellow: #fff399; /* 버튼에 들어가는 노랑 */
 }
 
 body {
