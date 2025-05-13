@@ -1,15 +1,12 @@
 module.exports = {
   content: [
-    './app/**/*.{js,ts,jsx,tsx}',
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  purge: [],
-  darkMode: false,
   theme: {
     extend: {
       colors: {
-        // 커스텀 컬러 지정
         'main-background': '#fafaf8',
         'main-text': '#333333',
         'main-yellow': '#FFD939',
@@ -17,9 +14,6 @@ module.exports = {
         'content-yellow': '#FFF399',
       },
     },
-  },
-  variants: {
-    extend: {},
   },
   plugins: [],
 };
