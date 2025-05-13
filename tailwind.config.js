@@ -1,4 +1,9 @@
 module.exports = {
+  content: [
+    './app/**/*.{js,ts,jsx,tsx}', // ✅ Next.js 13+ 구조
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
+  ],
   purge: [],
   darkMode: false,
   theme: {
