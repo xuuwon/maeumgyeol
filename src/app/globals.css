@@ -4,18 +4,18 @@
 @font-face {
   font-family: 'IM_Hyemin';
   src:
-    url('/assets/fonts/IM_Hyemin-Bold.ttf') format('ttf'),
-    url('/assets/fonts/IM_Hyemin-Regular.ttf') format('ttf');
+    url('/assets/fonts/IM_Hyemin-Bold.ttf') format('truetype'),
+    url('/assets/fonts/IM_Hyemin-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 :root {
-  --background: #fafaf8; // 배경
-  --main-text: #333333; // 텍스트 색상
-  --main-yellow: #FFD939; // 메인 노랑
-  --bg-yellow: #FFFDEC; // 배경 노랑
-  --content-yellow: #FFF399; // 버튼에 들어가는 노랑
+  --background: #fafaf8; /* 배경 */
+  --main-text: #333333; /* 텍스트 색상 */
+  --main-yellow: #FFD939; /* 메인 노랑 */
+  --bg-yellow: #FFFDEC; /* 배경 노랑 */
+  --content-yellow: #FFF399; /* 버튼에 들어가는 노랑 */
 }
 
 body {
