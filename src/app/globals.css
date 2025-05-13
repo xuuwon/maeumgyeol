@@ -1,26 +1,25 @@
-@import "tailwindcss";
+@import 'tailwindcss/preflight';
+@tailwind utilities;
+
+@font-face {
+  font-family: 'IM_Hyemin';
+  src:
+    url('/assets/fonts/IM_Hyemin-Bold.ttf') format('truetype'),
+    url('/assets/fonts/IM_Hyemin-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #fafaf8; /* 배경 */
+  --main-text: #333333; /* 텍스트 색상 */
+  --main-yellow: #FFD939; /* 메인 노랑 */
+  --bg-yellow: #FFFDEC; /* 배경 노랑 */
+  --content-yellow: #FFF399; /* 버튼에 들어가는 노랑 */
 }
 
 body {
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--main-text);
+  font-family: 'IM_Hyemin', sans-serif;
 }
