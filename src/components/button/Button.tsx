@@ -7,6 +7,7 @@ const Button = ({ type, text }: { type: string; text: string }) => {
       className={clsx(
         `w-[198px] max-w-sm sm:w-full h-12 border border-1 border-main-yellow rounded-xl`,
         `flex justify-center items-center cursor-pointer`,
+        `hover:bg-main-yellow`,
         type == 'yellow' ? `bg-content-yellow` : `bg-main-background`
       )}
     >
