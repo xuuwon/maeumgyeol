@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-100">
-        <div className="max-w-[768px] h-screen mx-auto px-4 sm:px-6 md:px-8 bg-main-background">
+        <div className="relative max-w-[768px] h-screen mx-auto px-4 sm:px-6 md:px-8 bg-main-background">
           {children}
         </div>
       </body>
