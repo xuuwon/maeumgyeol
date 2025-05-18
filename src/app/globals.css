@@ -22,4 +22,5 @@
 body {
   color: var(--main-text);
   font-family: 'IM_Hyemin', sans-serif;
+  font-size: 16px;
 }
