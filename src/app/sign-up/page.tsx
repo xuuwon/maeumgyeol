@@ -3,22 +3,20 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signupSchema } from './signupSchema';
+import { SignupSchema, signupSchema } from './signupSchema';
 import Button from '@/components/button/Button';
-
-type SignupFormData = typeof signupSchema._type;
 
 const Page = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignupFormData>({
+  } = useForm<SignupSchema>({
     resolver: zodResolver(signupSchema),
     mode: 'onBlur', // focus를 벗어날 때 유효성 검사 진행
   });
 
-  const onSubmit = (data: SignupFormData) => {
+  const onSubmit = (data: SignupSchema) => {
     console.log('회원가입 데이터:', data);
   };
 
