@@ -21,9 +21,9 @@ const Page = () => {
   };
 
   const inputStyle =
-    'h-9 border rounded-md w-80 bg-bg-yellow border-main-yellow focus:outline-none pl-2';
+    'h-9 border rounded-md w-80 bg-bg-yellow border-main-yellow focus:outline-none pl-2 text-[#909090]';
   const groupStyle = 'flex flex-col gap-3';
-  const errorTextStlye = 'text-sm text-[#909090]';
+  const errorTextStlye = 'text-sm text-red-400';
 
   return (
     <div className="flex flex-col items-center justify-around h-screen py-20 iphoneSE:py-10 sm:py-28">
@@ -38,7 +38,7 @@ const Page = () => {
           <input
             type="text"
             {...register('nickname')}
-            className={`${inputStyle} ${errors.nickname ? 'border-pink-500 text-pink-500' : ''}`}
+            className={`${inputStyle} ${errors.nickname ? 'border-red-400 text-red-400' : ''}`}
           />
           {errors.nickname && <p className={errorTextStlye}>{errors.nickname.message}</p>}
         </div>
@@ -47,7 +47,7 @@ const Page = () => {
           <input
             type="text"
             {...register('id')}
-            className={`${inputStyle} ${errors.id ? 'border-pink-500 text-pink-500' : ''}`}
+            className={`${inputStyle} ${errors.id ? 'border-red-400 text-red-400' : ''}`}
           />
           {errors.id && <p className={errorTextStlye}>{errors.id.message}</p>}
         </div>
@@ -56,7 +56,7 @@ const Page = () => {
           <input
             type="password"
             {...register('password')}
-            className={`${inputStyle} ${errors.password ? 'border-pink-500 text-pink-500' : ''}`}
+            className={`${inputStyle} ${errors.password ? 'border-red-400 text-red-400' : ''}`}
           />
           {errors.password && <p className={errorTextStlye}>{errors.password.message}</p>}
         </div>
@@ -65,7 +65,7 @@ const Page = () => {
           <input
             type="password"
             {...register('confirmPassword')}
-            className={`${inputStyle} ${errors.confirmPassword ? 'border-pink-500 text-pink-500' : ''}`}
+            className={`${inputStyle} ${errors.confirmPassword ? 'border-red-400 text-red-400' : ''}`}
           />
           {errors.confirmPassword && (
             <p className={errorTextStlye}>{errors.confirmPassword.message}</p>
