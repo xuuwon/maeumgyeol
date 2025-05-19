@@ -27,8 +27,8 @@ export default function Home() {
 
       {/* 버튼 */}
       <div className="flex flex-col items-center w-full gap-2">
-        <Button type="yellow" text="로그인" />
-        <Button type="white" text="회원가입" />
+        <Button type="yellow" text="로그인" onClick={() => {}} />
+        <Button type="white" text="회원가입" onClick={() => {}} />
       </div>
     </div>
   );

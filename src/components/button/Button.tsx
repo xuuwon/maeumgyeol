@@ -1,7 +1,15 @@
 import clsx from 'clsx';
 import React from 'react';
 
-const Button = ({ type, text }: { type: string; text: string }) => {
+const Button = ({
+  type,
+  text,
+  onClick,
+}: {
+  type: string;
+  text: string;
+  onClick: React.MouseEventHandler<HTMLDivElement>;
+}) => {
   return (
     <div
       className={clsx(
@@ -10,6 +18,7 @@ const Button = ({ type, text }: { type: string; text: string }) => {
         `hover:bg-main-yellow`,
         type == 'yellow' ? `bg-content-yellow` : `bg-main-background`
       )}
+      onClick={onClick}
     >
       {text}
     </div>
