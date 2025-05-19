@@ -1,7 +1,12 @@
+'use client';
+
 import Button from '@/components/button/Button';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <div className="flex flex-col items-center justify-around w-full h-screen py-12">
       {/* 제목 */}
@@ -27,8 +32,20 @@ export default function Home() {
 
       {/* 버튼 */}
       <div className="flex flex-col items-center w-full gap-2">
-        <Button type="yellow" text="로그인" onClick={() => {}} />
-        <Button type="white" text="회원가입" onClick={() => {}} />
+        <Button
+          type="yellow"
+          text="로그인"
+          onClick={() => {
+            router.push('/sign-in');
+          }}
+        />
+        <Button
+          type="white"
+          text="회원가입"
+          onClick={() => {
+            router.push('/sign-up');
+          }}
+        />
       </div>
     </div>
   );
