@@ -13,6 +13,9 @@ module.exports = {
         'bg-yellow': '#FFFDEC',
         'content-yellow': '#FFF399',
       },
+      screens: {
+        iphoneSE: { max: '375px' },
+      },
     },
   },
   plugins: [],
