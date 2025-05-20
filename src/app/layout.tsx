@@ -13,7 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko">
       <body className="bg-gray-100">
         <div className="w-full max-w-[768px] mx-auto h-screen bg-main-background">
-          <div className="relative h-full px-4 sm:px-6 md:px-8">
+          <div className="relative h-full">
             {children}
             {showNavBar && <NavBar />}
           </div>

@@ -26,7 +26,7 @@ const Page = () => {
   const errorTextStlye = 'text-sm text-red-400';
 
   return (
-    <div className="flex flex-col items-center justify-around h-screen py-20 iphoneSE:py-10 sm:py-28">
+    <div className="flex flex-col items-center justify-around h-screen px-4 py-20 iphoneSE:py-10 sm:py-28 sm:px-6 md:px-8">
       <p className="text-3xl iphoneSE:text-2xl">회원가입</p>
 
       <form

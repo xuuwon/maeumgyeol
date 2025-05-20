@@ -8,7 +8,7 @@ export default function Home() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col items-center justify-around w-full h-screen py-12">
+    <div className="flex flex-col items-center justify-around w-full h-screen px-4 py-12 sm:px-6 md:px-8">
       {/* 제목 */}
       <div className="text-3xl sm:text-4xl">마음결 (心結)</div>
 
