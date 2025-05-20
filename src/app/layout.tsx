@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import './globals.css';
 import NavBar from '@/components/navBar/NavBar';
+import Header from '@/components/header/Header';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-gray-100">
         <div className="w-full max-w-[768px] mx-auto h-screen bg-main-background">
           <div className="relative h-full">
+            {showNavBar && <Header />}
             {children}
             {showNavBar && <NavBar />}
           </div>
