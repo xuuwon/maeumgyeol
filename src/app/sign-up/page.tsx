@@ -73,7 +73,7 @@ const Page = () => {
         </div>
 
         <div className="flex justify-center w-full mx-auto">
-          <Button type="yellow" text="회원가입" onClick={handleSubmit(onSubmit)} />
+          <Button type="yellow" text="회원가입" func={handleSubmit(onSubmit)} />
         </div>
       </form>
     </div>

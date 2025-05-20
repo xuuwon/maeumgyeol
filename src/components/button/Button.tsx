@@ -4,11 +4,11 @@ import React from 'react';
 const Button = ({
   type,
   text,
-  onClick,
+  func,
 }: {
   type: string;
   text: string;
-  onClick: React.MouseEventHandler<HTMLDivElement>;
+  func: React.MouseEventHandler<HTMLDivElement>;
 }) => {
   return (
     <div
@@ -18,7 +18,7 @@ const Button = ({
         `hover:bg-main-yellow`,
         type == 'yellow' ? `bg-content-yellow` : `bg-main-background`
       )}
-      onClick={onClick}
+      onClick={func}
     >
       {text}
     </div>

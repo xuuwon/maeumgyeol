@@ -35,14 +35,14 @@ export default function Home() {
         <Button
           type="yellow"
           text="로그인"
-          onClick={() => {
+          func={() => {
             router.push('/sign-in');
           }}
         />
         <Button
           type="white"
           text="회원가입"
-          onClick={() => {
+          func={() => {
             router.push('/sign-up');
           }}
         />
