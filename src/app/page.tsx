@@ -13,12 +13,12 @@ export default function Home() {
       <div className="text-3xl sm:text-4xl">마음결 (心結)</div>
 
       {/* 이미지 */}
-      <div>
+      <div className="iphoneSE:w-56">
         <Image
           src="/images/landing.png" // public 폴더 기준 경로 또는 외부 URL
           alt="설명 텍스트"
-          width={350} // 이미지 가로 크기(px)
-          height={350} // 이미지 세로 크기(px)
+          width={350}
+          height={350}
         />
       </div>
 
