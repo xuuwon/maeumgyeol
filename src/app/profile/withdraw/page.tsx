@@ -1,6 +1,7 @@
 'use client';
 
 import Button from '@/components/button/Button';
+import LayerPopup from '@/components/layerPopup/LayerPopup';
 import { ChevronLeft, Square, SquareCheckBig } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -8,10 +9,20 @@ import React, { useState } from 'react';
 
 const Page = () => {
   const [ischecked, setIsChecked] = useState<boolean>(false);
+  const [showLayerPopup, setShowLayerPopup] = useState<boolean>(false);
   const router = useRouter();
 
   return (
     <div className="flex flex-col items-center justify-around h-screen px-4 py-20 sm:px-6 md:px-8">
+      {showLayerPopup && (
+        <LayerPopup
+          confirmType={true}
+          mainText="탈퇴가 완료되었습니다."
+          onConfirm={() => {
+            router.push('/');
+          }}
+        />
+      )}
       <ChevronLeft
         size={30}
         className="absolute cursor-pointer top-4 left-2 sm:left-3 md:left-4"
@@ -62,7 +73,13 @@ const Page = () => {
 
         {/* 버튼 */}
         {ischecked ? (
-          <Button type="white" text="탈퇴하기" func={() => {}} />
+          <Button
+            type="white"
+            text="탈퇴하기"
+            func={() => {
+              setShowLayerPopup(true);
+            }}
+          />
         ) : (
           <Button type="gray" text="탈퇴하기" func={() => {}} />
         )}
