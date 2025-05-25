@@ -14,7 +14,7 @@ const Page = () => {
     <div className="flex flex-col items-center justify-around h-screen px-4 py-20 sm:px-6 md:px-8">
       <ChevronLeft
         size={30}
-        className="absolute cursor-pointer top-4 left-2"
+        className="absolute cursor-pointer top-4 left-2 sm:left-3 md:left-4"
         onClick={() => {
           router.back();
         }}
@@ -43,7 +43,7 @@ const Page = () => {
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-5">
+      <div className="flex flex-col items-center gap-8">
         <div className="flex self-start justify-center gap-1">
           {/* 체크박스 */}
           {!ischecked ? (
