@@ -7,7 +7,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Button from '@/components/button/Button';
 import Placeholder from '@tiptap/extension-placeholder';
 import '../globals.css';
-import { CircleChevronDown } from 'lucide-react';
+import { ChevronLeft, CircleChevronDown } from 'lucide-react';
 import FileDropZone from '@/components/fileDropzone/FileDropZone';
 import { ToolBar } from '@/components/toolBar/ToolBar';
 import LayerPopup from '@/components/layerPopup/LayerPopup';
@@ -118,6 +118,13 @@ const Page = () => {
 
   return (
     <>
+      <ChevronLeft
+        size={30}
+        className="absolute cursor-pointer top-4 left-2 sm:left-3 md:left-4"
+        onClick={() => {
+          router.back();
+        }}
+      />
       {showRewriteModal && (
         <LayerPopup
           confirmType={true}
@@ -133,7 +140,7 @@ const Page = () => {
           subText="작성 후에는 수정하실 수 없습니다."
           onClose={() => setShowSaveModal(false)}
           onConfirm={() => {
-            router.push('/');
+            router.push('/home');
           }}
         />
       )}
@@ -143,7 +150,7 @@ const Page = () => {
           subText="작성 중인 내용은 저장되지 않습니다."
           onClose={() => setShowSaveRestrictionModal(false)}
           onConfirm={() => {
-            router.back();
+            router.push('/home');
           }}
         />
       )}
