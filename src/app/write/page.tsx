@@ -22,6 +22,7 @@ const Page = () => {
   const [dropdown, setDropdown] = useState<boolean>(false);
   const [weather, setWeather] = useState<string>('날씨');
   const [title, setTitle] = useState<string>('');
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   const [showRewriteModal, setShowRewriteModal] = useState<boolean>(false);
   const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
@@ -106,7 +107,7 @@ const Page = () => {
         weather,
         title,
         content,
-        textContent,
+        imagePreviews,
       };
 
       console.log('제출된 데이터:', formData);
@@ -130,8 +131,10 @@ const Page = () => {
         <LayerPopup
           mainText="작성을 완료하시겠습니까?"
           subText="작성 후에는 수정하실 수 없습니다."
-          onClose={() => setShowRewriteModal(false)}
-          onConfirm={() => {}}
+          onClose={() => setShowSaveModal(false)}
+          onConfirm={() => {
+            router.push('/');
+          }}
         />
       )}
       {showSaveRestrictionModal && (
@@ -139,7 +142,9 @@ const Page = () => {
           mainText="작성을 중단하시겠습니까?"
           subText="작성 중인 내용은 저장되지 않습니다."
           onClose={() => setShowSaveRestrictionModal(false)}
-          onConfirm={() => {}}
+          onConfirm={() => {
+            router.back();
+          }}
         />
       )}
       <div className="flex flex-col h-screen gap-3 px-4 mx-auto sm:px-6 md:px-8 ">
@@ -196,7 +201,7 @@ const Page = () => {
         </div>
 
         {/* 이미지 업로드 */}
-        <FileDropZone />
+        <FileDropZone previews={imagePreviews} setPreviews={setImagePreviews} />
 
         {/* 본문 입력 (Tiptap) */}
         <div>

@@ -1,20 +1,27 @@
 'use client';
 
 import clsx from 'clsx';
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-const FileDropZone = () => {
-  const [previews, setPreviews] = useState<string[]>([]);
-
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    setPreviews((prev) => {
-      const remainingSlots = 5 - prev.length;
-      const filesToAdd = acceptedFiles.slice(0, remainingSlots);
-      const urls = filesToAdd.map((file) => URL.createObjectURL(file));
-      return [...prev, ...urls];
-    });
-  }, []);
+const FileDropZone = ({
+  previews,
+  setPreviews,
+}: {
+  previews: string[];
+  setPreviews: React.Dispatch<React.SetStateAction<string[]>>;
+}) => {
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      setPreviews((prev) => {
+        const remainingSlots = 5 - prev.length;
+        const filesToAdd = acceptedFiles.slice(0, remainingSlots);
+        const urls = filesToAdd.map((file) => URL.createObjectURL(file));
+        return [...prev, ...urls];
+      });
+    },
+    [setPreviews]
+  );
 
   useEffect(() => {
     return () => {
