@@ -4,7 +4,13 @@ import { LayerPopupProps } from './type';
 
 const buttonStyle = 'w-24 border rounded-md h-9 border-1 border-main-yellow text-[14px]';
 
-const LayerPopup: React.FC<LayerPopupProps> = ({ mainText, subText, onClose }) => {
+const LayerPopup: React.FC<LayerPopupProps> = ({
+  confirmType = false,
+  mainText,
+  subText,
+  onClose,
+  onConfirm,
+}) => {
   return (
     <div className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center w-full h-screen bg-main-text/40">
       <div
@@ -20,10 +26,14 @@ const LayerPopup: React.FC<LayerPopupProps> = ({ mainText, subText, onClose }) =
         </div>
         <div className="flex gap-5">
           {/* 버튼 */}
-          <button className={`${buttonStyle} bg-main-background`} onClick={onClose}>
-            취소
+          {!confirmType && (
+            <button className={`${buttonStyle} bg-main-background`} onClick={onClose}>
+              취소
+            </button>
+          )}
+          <button className={`${buttonStyle} bg-content-yellow`} onClick={onConfirm}>
+            확인
           </button>
-          <button className={`${buttonStyle} bg-content-yellow`}>확인</button>
         </div>
       </div>
     </div>
