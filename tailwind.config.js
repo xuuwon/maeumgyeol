@@ -16,6 +16,9 @@ module.exports = {
       screens: {
         iphoneSE: { max: '375px' },
       },
+      animation: {
+        'spin-slow': 'spin 3s linear infinite',
+      },
     },
   },
   plugins: [],
