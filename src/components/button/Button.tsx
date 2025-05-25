@@ -14,9 +14,12 @@ const Button = ({
     <div
       className={clsx(
         `w-[198px] max-w-sm sm:w-full h-12 border border-1 border-main-yellow rounded-xl`,
-        `flex justify-center items-center cursor-pointer`,
-        `hover:bg-main-yellow`,
-        type == 'yellow' ? `bg-content-yellow` : `bg-main-background`
+        `flex justify-center items-center`,
+        type == 'yellow'
+          ? `bg-content-yellow hover:bg-main-yellow cursor-pointer`
+          : type == 'gray'
+            ? 'bg-gray-300 border-gray-600'
+            : `bg-main-background hover:bg-main-yellow cursor-pointer`
       )}
       onClick={func}
     >
