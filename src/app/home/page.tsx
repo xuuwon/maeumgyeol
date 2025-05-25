@@ -3,6 +3,7 @@
 import Button from '@/components/button/Button';
 import clsx from 'clsx';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 const Page = () => {
@@ -14,6 +15,8 @@ const Page = () => {
   const day = today.getDate();
   const dayName = days[today.getDay()];
   const todayDate = `${year}년 ${month}월 ${day}일`;
+
+  const router = useRouter();
 
   return (
     <div
@@ -39,7 +42,13 @@ const Page = () => {
       </div>
 
       <div className="flex justify-center w-full">
-        <Button type="yellow" text="일기 작성하기" func={() => {}} />
+        <Button
+          type="yellow"
+          text="일기 작성하기"
+          func={() => {
+            router.push('/write');
+          }}
+        />
       </div>
     </div>
   );
