@@ -3,13 +3,13 @@
 import PageClient from './PageClient';
 
 interface DetailPageProps {
-  params: {
+  params: Promise<{
     date: string;
-  };
+  }>;
 }
 
 export default async function DetailPage({ params }: DetailPageProps) {
-  const date = params.date;
+  const { date } = await params;
 
   // API 호출
 
