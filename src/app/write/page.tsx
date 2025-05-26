@@ -224,7 +224,7 @@ const Page = () => {
           </div>
         </div>
 
-        <div className="flex justify-center mt-auto mb-8 md:mb-4">
+        <div className="flex justify-center mt-auto " style={{ marginBottom: '4vh' }}>
           <Button type="yellow" func={handleSubmit} text="작성 완료" />
         </div>
       </div>
