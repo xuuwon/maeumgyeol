@@ -119,7 +119,7 @@ const Page = () => {
             handleSubmit();
           }}
         />
-        <p className="text-sm">저장 후에도 다시 확인할 수 있어요!</p>
+        <p className="text-sm">저장 후에도 다시 수정/확인할 수 있어요!</p>
       </div>
     </div>
   );
