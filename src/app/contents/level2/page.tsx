@@ -12,7 +12,7 @@ const Page = () => {
     title: '부정적인 감정의 원인에 대한 고찰',
   };
 
-  const dateObj = new Date(data.date);
+  const dateObj = new Date();
   const year = dateObj.getFullYear();
   const month = dateObj.getMonth() + 1;
   const day = dateObj.getDate();

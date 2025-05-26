@@ -16,7 +16,7 @@ const Page = () => {
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHilk2EkOTSbl28IsCumTdX_m-IrcQ9BgddA&s',
   };
 
-  const dateObj = new Date(data.date);
+  const dateObj = new Date();
   const year = dateObj.getFullYear();
   const month = dateObj.getMonth() + 1;
   const day = dateObj.getDate();
