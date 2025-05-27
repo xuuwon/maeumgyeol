@@ -160,8 +160,8 @@ const Page = () => {
           }}
         />
       )}
-      <div className="flex flex-col h-screen gap-3 px-4 mx-auto sm:px-6 md:px-8 ">
-        <div className="flex flex-col items-center justify-center gap-2 text-xl h-1/6 iphoneSE:mt-5">
+      <div className="flex flex-col h-full gap-3 px-4 mx-auto sm:px-6 md:px-8 ">
+        <div className="flex flex-col items-center justify-center h-32 gap-3 pt-10 text-xl iphoneSE:mt-5">
           <p>{todayDate}</p>
           <p>오늘의 일기</p>
         </div>
