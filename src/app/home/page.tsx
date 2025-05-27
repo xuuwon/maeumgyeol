@@ -15,6 +15,7 @@ const Page = () => {
   const day = today.getDate();
   const dayName = days[today.getDay()];
   const todayDate = `${year}년 ${month}월 ${day}일`;
+  const todayDateFormatted = `${year}-${month}-${day}`; // "2025-05-27" 같은 형식
 
   const router = useRouter();
 
@@ -46,7 +47,7 @@ const Page = () => {
           type="yellow"
           text="일기 작성하기"
           func={() => {
-            router.push('/write');
+            router.push(`/write/${todayDateFormatted}`);
           }}
         />
       </div>
