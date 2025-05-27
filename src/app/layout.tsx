@@ -31,8 +31,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="theme-color" content="#ffffff" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        {/* <link rel="apple-touch-icon" href="/icon-192.png" />
-        <link rel="icon" href="/favicon.ico" /> */}
+        <link rel="apple-touch-icon" href="/images/icon.png" />
+        <link rel="apple-touch-icon" href="/images/icon.png" />
       </head>
       <body className="bg-gray-100">
         <div className="w-full max-w-[768px] mx-auto min-h-screen bg-main-background">
