@@ -27,15 +27,15 @@ const Page = () => {
   const errorTextStlye = 'text-sm text-red-400 mx-auto';
 
   return (
-    <div className="flex flex-col items-center justify-around h-screen px-4 py-20 iphoneSE:py-10 sm:px-6 md:px-8">
-      <p className="text-3xl iphoneSE:text-2xl">로그인</p>
+    <div className="flex flex-col items-center justify-around h-screen px-4 py-16 iphoneSE:py-10 sm:px-6 md:px-8">
+      <p className="text-2xl">로그인</p>
 
       <div className="flex justify-center iphoneSE:w-48 drop-shadow-xl">
         <Image
           src="/images/characters/basic_character.png" // public 폴더 기준 경로 또는 외부 URL
           alt="설명 텍스트"
-          width={230} // 이미지 가로 크기(px)
-          height={230} // 이미지 세로 크기(px)
+          width={190} // 이미지 가로 크기(px)
+          height={190} // 이미지 세로 크기(px)
         />
       </div>
 
