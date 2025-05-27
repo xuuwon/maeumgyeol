@@ -23,12 +23,12 @@ const Page = () => {
       <div className="flex flex-col w-full h-40 gap-3 p-5 border border-1 border-main-yellow bg-bg-yellow rounded-xl">
         {/* 회원정보 박스 */}
         <div className="flex flex-col gap-1">
-          <p className="text-main-yellow">사용자 ID</p>
+          <p className="text-[#ffad20]">사용자 ID</p>
           <p>capstone1234</p>
         </div>
 
         <div className="flex flex-col gap-1">
-          <p className="text-main-yellow">닉네임</p>
+          <p className="text-[#ffad20]">닉네임</p>
           <p>강지웅짱짱맨</p>
         </div>
       </div>
