@@ -6,8 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SigninSchema, signinSchema } from './signinSchema';
 import Button from '@/components/button/Button';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const Page = () => {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -19,6 +22,7 @@ const Page = () => {
 
   const onSubmit = (data: SigninSchema) => {
     console.log('로그인 데이터:', data);
+    router.push('/home');
   };
 
   const inputStyle =
