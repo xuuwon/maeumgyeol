@@ -10,7 +10,7 @@ const NavBar = () => {
   const iconStyle = 'hover:text-[#ffad20] cursor-pointer';
 
   return (
-    <div className="absolute bottom-0 left-0 flex items-center justify-between w-full h-16 px-8 sm:px-10 md:px-12">
+    <div className="absolute bottom-0 left-0 flex items-center justify-between w-full h-[70px] px-8 sm:px-10 md:px-12">
       <House className={iconStyle} onClick={() => router.push('/home')} />
       <CalendarDays className={iconStyle} onClick={() => router.push('/calendar')} />
       <ChartColumn className={iconStyle} onClick={() => router.push('/statistic')} />
