@@ -8,15 +8,17 @@ import Color from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import Button from '@/components/button/Button';
 import Placeholder from '@tiptap/extension-placeholder';
-import '../globals.css';
+import '../../globals.css';
 import { ChevronLeft, CircleChevronDown } from 'lucide-react';
 import FileDropZone from '@/components/fileDropzone/FileDropZone';
 import { ToolBar } from '@/components/toolBar/ToolBar';
 import LayerPopup from '@/components/layerPopup/LayerPopup';
 import { customHighlight } from '@/extension/customHighlight';
 
-const Page = () => {
-  const today = new Date();
+const PageClient = ({ date }: { date: string }) => {
+  console.log(date);
+
+  const today = new Date(date);
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
   const day = today.getDate();
@@ -237,4 +239,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default PageClient;
