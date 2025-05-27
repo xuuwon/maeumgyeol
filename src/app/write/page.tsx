@@ -118,7 +118,6 @@ const Page = () => {
 
       console.log('제출된 데이터:', formData);
       setShowSaveModal(true);
-      router.push('/write/detail/2025-05-25');
     }
   };
 
@@ -146,7 +145,7 @@ const Page = () => {
           subText="작성 후에는 수정하실 수 없습니다."
           onClose={() => setShowSaveModal(false)}
           onConfirm={() => {
-            router.push('/home');
+            router.push('/write/detail/2025-05-25');
           }}
         />
       )}
