@@ -12,12 +12,7 @@ const PageClient = ({ date }: { date: string }) => {
     weather: 'sunny',
     title: '별 거 없는 하루',
     content:
-      '<p>오늘은 캡스톤 팀원들과 떡볶이를 먹었다. 아주 맛있고 배불렀다. 😋</p>' +
-      '<p>분식집에 앉아 이런저런 이야기를 나누며 오랜만에 웃을 일이 많았다. 프로젝트 이야기도 자연스럽게 풀리면서 팀워크도 더 끈끈해진 느낌이었다.</p>' +
-      '<p>그리고 오버워치도 했는데 많이 이기고 적팀에게 칭찬도 받아서 기분이 아주 좋다.</p>' +
-      '<p>예전에 실수할까봐 위축됐던 내 플레이가 오늘은 꽤 날카롭고 과감했다. 나도 모르게 마이크로 "나 좀 잘하는데?"라는 말이 나올 정도였다.</p>' +
-      '<p>이런 사소한 하루가 나중에 돌아보면 가장 그리울지도 모른다는 생각이 든다.</p>' +
-      '<p>매일이 오늘 같으면 좋겠다.</p>',
+      '<p>오늘은 <mark class="custom-highlight" style="background-color: #81C784;">캡스톤 팀원들</mark>과 떡볶이를 먹었다. 아주 맛있고 배불렀다. 😋</p><p>분식집에 앉아 이런저런 이야기를 나누며 오랜만에 웃을 일이 많았다. 프로젝트 이야기도 자연스럽게 풀리면서 팀워크도 더 끈끈해진 느낌이었다.</p><p>그리고 오버워치도 했는데 많이 이기고<span style="color: #F57C00"> 적팀에게 칭찬도 받아서</span> 기분이 아주 좋다.</p><p>예전에 실수할까봐 위축됐던 내 플레이가 <span style="color: #283593"><em>오늘은 꽤 날카롭고 과감했다.</em></span> 나도 모르게 마이크로 "<s>나 좀 잘하는데?</s>"라는 말이 나올 정도였다.</p><p>이런 사소한 하루가 나중에 돌아보면 가장 그리울지도 모른다는 생각이 든다.</p><p><mark class="custom-highlight" style="background-color: #81C784;">매일이 오늘 같으면 좋겠다.</mark></p><p></p>',
     imageUrls: [
       'https://news.samsungdisplay.com/wp-content/uploads/2018/08/8.jpg',
       'https://news.samsungdisplay.com/wp-content/uploads/2018/08/8.jpg',
@@ -101,12 +96,14 @@ const PageClient = ({ date }: { date: string }) => {
       {/* 마음챙김 콘텐츠 배너 자리 */}
       <div
         className="relative flex flex-col items-center justify-around w-full h-16 p-4 border cursor-pointer border-1 border-main-yellow bg-content-yellow rounded-xl hover:bg-main-yellow"
-        onClick={() => {}}
+        onClick={() => {
+          router.push('/contents/level1');
+        }}
       >
         <div className="absolute p-1 px-2 text-sm -top-2 -left-3 bg-[#ffad20] rounded-xl text-white">
           Click!
         </div>
-        <p>✉️ 오늘의 마음 챙김 콘텐츠가 도착했습니다. ✉️</p>
+        <p>✉️ 오늘의 마음 챙김 콘텐츠가 도착했습니다.</p>
       </div>
 
       {/* 홈으로 버튼 */}
