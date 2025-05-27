@@ -118,7 +118,7 @@ const Page = () => {
 
       console.log('제출된 데이터:', formData);
       setShowSaveModal(true);
-      lastPathname.current = pathname;
+      router.push('/write/detail/2025-05-25');
     }
   };
 
