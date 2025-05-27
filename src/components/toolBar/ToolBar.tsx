@@ -1,15 +1,9 @@
-// ToolBar.tsx
 import type { Editor } from '@tiptap/react';
 
 import {
-  Bold,
   Strikethrough,
   Italic,
-  List,
-  ListOrdered,
-  Heading1,
-  Heading2,
-  Heading3,
+  Highlighter, // 하이라이트 대체 아이콘
 } from 'lucide-react';
 
 type ToolBarProps = {
@@ -21,18 +15,21 @@ export const ToolBar = ({ editor }: ToolBarProps) => {
   if (!editor) {
     return null;
   }
+
+  const toggleColor = (editor: Editor, color: string) => {
+    const currentColor = editor.getAttributes('textStyle').color;
+
+    if (currentColor === color) {
+      editor.chain().focus().unsetColor().run();
+    } else {
+      editor.chain().focus().setColor(color).run();
+    }
+  };
+
   return (
     <div className="flex flex-wrap items-start justify-between w-full gap-5 px-3 py-2 border rounded-t-xl border-main-yellow bg-bg-yellow">
       <div className="flex flex-wrap items-center justify-start w-full gap-5">
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            editor.chain().focus().toggleBold().run();
-          }}
-          className={editor.isActive('bold') ? 'text-main-yellow' : 'text-gray-400'}
-        >
-          <Bold className="w-5 h-5" />
-        </button>
+        {/* 기본 서식 */}
         <button
           onClick={(e) => {
             e.preventDefault();
@@ -42,6 +39,7 @@ export const ToolBar = ({ editor }: ToolBarProps) => {
         >
           <Italic className="w-5 h-5" />
         </button>
+
         <button
           onClick={(e) => {
             e.preventDefault();
@@ -51,75 +49,40 @@ export const ToolBar = ({ editor }: ToolBarProps) => {
         >
           <Strikethrough className="w-5 h-5" />
         </button>
+
+        {/* 하이라이트 */}
         <button
           onClick={(e) => {
             e.preventDefault();
-            editor.chain().focus().toggleHeading({ level: 1 }).run();
+            editor.chain().focus().toggleHighlight().run();
+            editor.chain().focus().unsetColor().run();
           }}
-          className={
-            editor.isActive('heading', { level: 1 }) ? 'text-main-yellow' : 'text-gray-400'
-          }
+          className={editor.isActive('highlight') ? 'text-main-yellow' : 'text-gray-400'}
         >
-          <Heading1 className="w-5 h-5" />
+          <Highlighter className="w-5 h-5" />
         </button>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            editor.chain().focus().toggleHeading({ level: 2 }).run();
-          }}
-          className={
-            editor.isActive('heading', { level: 2 }) ? 'text-main-yellow' : 'text-gray-400'
-          }
-        >
-          <Heading2 className="w-5 h-5" />
-        </button>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            editor.chain().focus().toggleHeading({ level: 3 }).run();
-          }}
-          className={
-            editor.isActive('heading', { level: 3 }) ? 'text-main-yellow' : 'text-gray-400'
-          }
-        >
-          <Heading3 className="w-5 h-5" />
-        </button>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            editor.chain().focus().toggleBulletList().run();
-          }}
-          className={editor.isActive('bulletList') ? 'text-main-yellow' : 'text-gray-400'}
-        >
-          <List className="w-5 h-5" />
-        </button>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            editor.chain().focus().toggleOrderedList().run();
-          }}
-          className={editor.isActive('orderedList') ? 'text-main-yellow' : 'text-gray-400'}
-        >
-          <ListOrdered className="w-5 h-5" />
-        </button>
-        {/* <button
-          onClick={(e) => {
-            e.preventDefault();
-            editor.chain().focus().undo().run();
-          }}
-          className={editor.isActive('undo') ? 'text-main-yellow' : 'text-gray-400'}
-        >
-          <Undo className="w-5 h-5" />
-        </button>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            editor.chain().focus().redo().run();
-          }}
-          className={editor.isActive('redo') ? 'text-main-yellow' : 'text-gray-400'}
-        >
-          <Redo className="w-5 h-5" />
-        </button> */}
+
+        {/* 텍스트 컬러들 */}
+        {[
+          { color: '#5D4037', label: '#5D4037' },
+          { color: '#283593', label: '#283593' },
+          { color: '#00796B', label: '#00796B' },
+          { color: '#F57C00', label: '#F57C00' },
+        ].map(({ color }, idx) => (
+          <button
+            key={idx}
+            onClick={(e) => {
+              e.preventDefault();
+              toggleColor(editor, color);
+              editor.chain().focus().unsetHighlight().run();
+            }}
+            className={`w-5 h-5 rounded-full border-2 ${
+              editor.isActive('textStyle', { color }) ? 'border-main-yellow' : 'border-transparent'
+            }`}
+            style={{ backgroundColor: color }}
+            title={`Set color: ${color}`}
+          />
+        ))}
       </div>
     </div>
   );

@@ -4,6 +4,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import Color from '@tiptap/extension-color';
+import TextStyle from '@tiptap/extension-text-style';
 import Button from '@/components/button/Button';
 import Placeholder from '@tiptap/extension-placeholder';
 import '../globals.css';
@@ -11,6 +13,7 @@ import { ChevronLeft, CircleChevronDown } from 'lucide-react';
 import FileDropZone from '@/components/fileDropzone/FileDropZone';
 import { ToolBar } from '@/components/toolBar/ToolBar';
 import LayerPopup from '@/components/layerPopup/LayerPopup';
+import { customHighlight } from '@/extension/customHighlight';
 
 const Page = () => {
   const today = new Date();
@@ -46,6 +49,9 @@ const Page = () => {
   const editor = useEditor({
     extensions: [
       StarterKit,
+      TextStyle,
+      Color.configure({ types: ['textStyle'] }),
+      customHighlight,
       Placeholder.configure({
         placeholder: '오늘 당신의 하루는 어땠나요?',
       }),
