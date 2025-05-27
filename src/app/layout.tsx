@@ -8,7 +8,7 @@ import Header from '@/components/header/Header';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const showNavBarList = ['/home', '/calendar', '/statistic', '/profile'];
+  const showNavBarList = ['/home', '/calendar', '/statistic', '/profile', '/shopping', '/store'];
   const showNavBar = showNavBarList.includes(pathname);
 
   // ✅ 서비스워커 등록
