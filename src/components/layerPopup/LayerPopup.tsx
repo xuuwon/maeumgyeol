@@ -1,5 +1,7 @@
+'use client';
+
 import clsx from 'clsx';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { LayerPopupProps } from './type';
 
 const buttonStyle = 'w-24 border rounded-md h-9 border-1 border-main-yellow text-[14px]';
@@ -11,8 +13,20 @@ const LayerPopup: React.FC<LayerPopupProps> = ({
   onClose,
   onConfirm,
 }) => {
+  useEffect(() => {
+    // 팝업 열릴 때 스크롤 방지
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none'; // 모바일 터치 방지
+
+    return () => {
+      // 팝업 닫힐 때 원상복구
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, []);
+
   return (
-    <div className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center w-full h-screen bg-main-text/40">
+    <div className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center w-full h-full bg-main-text/40">
       <div
         className={clsx(
           'fixed z-50 flex flex-col items-center h-40 gap-4 px-5 w-80 bg-main-background rounded-xl',
