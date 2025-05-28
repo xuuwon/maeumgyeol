@@ -115,7 +115,7 @@ const Page = () => {
       </div>
 
       {/* 아이템 리스트 */}
-      <div className="relative w-full mt-auto h-[600px] mb-[70px] bg-content-yellow overflow-y-scroll">
+      <div className="relative w-full mt-auto h-full mb-[70px] bg-content-yellow overflow-y-scroll">
         {/* 적용 버튼 */}
         {selectedItem && !selectedItem.isEquipped && (
           <button
