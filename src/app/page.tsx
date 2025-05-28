@@ -17,8 +17,8 @@ export default function Home() {
         <Image
           src="/images/landing.png" // public 폴더 기준 경로 또는 외부 URL
           alt="설명 텍스트"
-          width={350}
-          height={350}
+          width={250}
+          height={250}
         />
       </div>
 
