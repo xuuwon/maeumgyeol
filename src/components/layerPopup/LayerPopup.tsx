@@ -26,7 +26,7 @@ const LayerPopup: React.FC<LayerPopupProps> = ({
   }, []);
 
   return (
-    <div className="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center w-full h-full bg-main-text/40">
+    <div className="absolute top-0 bottom-0 left-0 right-0 z-50 flex items-center justify-center w-full h-full bg-main-text/40">
       <div
         className={clsx(
           'fixed z-50 flex flex-col items-center h-40 gap-4 px-5 w-80 bg-main-background rounded-xl',
