@@ -1,5 +1,6 @@
 'use client';
 
+import LayerPopup from '@/components/layerPopup/LayerPopup';
 import clsx from 'clsx';
 import Image from 'next/image';
 import React, { useState } from 'react';
@@ -7,14 +8,14 @@ import React, { useState } from 'react';
 const Page = () => {
   const [selectedCategory, setSelectedCategory] = useState<'배경' | '액세서리'>('배경');
 
-  const userData = {
+  const [userData, setUserData] = useState({
     userId: 'user1234',
     nickname: '감자몽러버',
     gender: 'female',
     birthday: '2000-05-01',
     character: '/images/characters/basic_character.png',
     coin: 1500,
-  };
+  });
 
   const data = [
     // 임시 데이터
@@ -126,99 +127,169 @@ const Page = () => {
   const [buyBackground, setBuyBackground] = useState<string>('');
   const [showBuyButton, setShowBuyButton] = useState<boolean>(false);
 
+  const [showBuyLayerPopup, setShowBuyLayerPopup] = useState<boolean>(false); // 구매 확인 레이어팝업
+  const [showCompleteLayerPopup, setShowCompleteLayerPopup] = useState<boolean>(false); // 구매 성공 레이어팝업
+  const [showCoinLayerPopup, setShowCoinLayerPopup] = useState<boolean>(false); // 코인 부족 레이어팝업
+
+  const handleBuyItem = () => {
+    const selectedItem = data.find((item) => item.id === selectedItemId);
+    if (!selectedItem) return;
+
+    if (userData.coin < selectedItem.price) {
+      setShowBuyLayerPopup(false);
+      setShowCoinLayerPopup(true);
+      return;
+    }
+
+    // 여기에 실제 구매 API 호출이 들어갈 수 있습니다.
+    // 예: await buyItemAPI(selectedItem.id);
+
+    // 임시로 구매 성공 처리
+    setShowBuyLayerPopup(false);
+    setShowCompleteLayerPopup(true);
+
+    // 아이템을 구매한 것으로 처리 (데모용)
+    setUserData((prev) => ({
+      ...prev,
+      coin: prev.coin - selectedItem.price,
+    }));
+
+    selectedItem.isOwned = true;
+    setShowBuyButton(false);
+  };
+
   return (
-    <div className="flex flex-col items-center w-full h-screen">
-      <div className="flex justify-around w-full mt-20 h-9">
-        <div
-          className={`flex justify-center w-1/2 border-b-2 cursor-pointer ${
-            selectedCategory === '배경' ? 'border-main-text font-semibold' : 'border-gray-200'
-          }`}
-          onClick={() => setSelectedCategory('배경')}
-        >
-          배경
+    <>
+      {showBuyLayerPopup && (
+        <LayerPopup
+          mainText="구매하시겠습니까?"
+          subText="구매 후 취소하실 수 없습니다."
+          onConfirm={() => {
+            /* 구매 API */
+            handleBuyItem();
+          }}
+          onClose={() => {
+            setShowBuyLayerPopup(false);
+          }}
+        />
+      )}
+      {showCompleteLayerPopup && (
+        <LayerPopup
+          confirmType={true}
+          mainText="구매가 완료되었습니다."
+          subText="보관함에서 확인하실 수 있습니다."
+          onConfirm={() => {
+            setShowCompleteLayerPopup(false);
+          }}
+        />
+      )}
+      {showCoinLayerPopup && (
+        <LayerPopup
+          confirmType={true}
+          mainText="코인이 부족합니다."
+          onConfirm={() => {
+            setShowCoinLayerPopup(false);
+          }}
+        />
+      )}
+      <div className="flex flex-col items-center w-full h-screen">
+        <div className="flex justify-around w-full mt-20 h-9">
+          <div
+            className={`flex justify-center w-1/2 border-b-2 cursor-pointer ${
+              selectedCategory === '배경' ? 'border-main-text font-semibold' : 'border-gray-200'
+            }`}
+            onClick={() => setSelectedCategory('배경')}
+          >
+            배경
+          </div>
+          <div
+            className={`flex justify-center w-1/2 border-b-2 cursor-pointer ${
+              selectedCategory === '액세서리' ? 'border-main-text font-semibold' : 'border-gray-200'
+            }`}
+            onClick={() => setSelectedCategory('액세서리')}
+          >
+            액세서리
+          </div>
         </div>
+
         <div
-          className={`flex justify-center w-1/2 border-b-2 cursor-pointer ${
-            selectedCategory === '액세서리' ? 'border-main-text font-semibold' : 'border-gray-200'
-          }`}
-          onClick={() => setSelectedCategory('액세서리')}
+          className={`relative flex items-center justify-center w-full h-72`}
+          style={{ backgroundImage: `url(${buyBackground})`, backgroundSize: 'auto 100%' }}
         >
-          액세서리
-        </div>
-      </div>
-
-      <div
-        className={`relative flex items-center justify-center w-full h-72`}
-        style={{ backgroundImage: `url(${buyBackground})`, backgroundSize: 'auto 100%' }}
-      >
-        <Image src={buyItem} alt="캐릭터" width={150} height={150} />
-        {showBuyButton && (
-          <button className="absolute z-10 w-20 rounded-lg h-9 -bottom-4 bg-main-yellow drop-shadow-lg">
-            구매하기
-          </button>
-        )}
-      </div>
-
-      <div className="w-full mt-auto h-[450px] mb-[70px] bg-content-yellow overflow-y-scroll">
-        {/* 아이템 목록 */}
-        <div className="grid w-full grid-cols-2 gap-4 px-6 py-6">
-          {filteredItems.map((item, index) => (
-            <div
-              key={index}
-              className={clsx(
-                'relative flex flex-col items-center justify-center p-4 shadow-md cursor-pointer rounded-xl bg-main-background',
-                item.id === selectedItemId
-                  ? 'bg-bg-yellow'
-                  : item.isOwned
-                    ? 'bg-gray-200'
-                    : 'hover:bg-bg-yellow'
-              )}
+          <Image src={buyItem} alt="캐릭터" width={150} height={150} />
+          {showBuyButton && (
+            <button
+              className="absolute z-10 w-20 rounded-lg h-9 -bottom-4 bg-main-yellow drop-shadow-lg"
               onClick={() => {
-                if (item.category !== '배경') {
-                  setSelectedItemId(item.id);
-                  setBuyItem(item.appliedImage);
-                  if (!item.isOwned) {
-                    setShowBuyButton(true);
-                  } else {
-                    setShowBuyButton(false);
-                  }
-                } else {
-                  if (item.name == '벚꽃 배경') {
-                    setBuyBackground('/images/background/store_cherryBlossom.png');
-                  } else {
-                    setBuyBackground('/images/background/store_beach.png');
-                  }
-                  setSelectedItemId(item.id);
-                  if (!item.isOwned) {
-                    setShowBuyButton(true);
-                  } else {
-                    setShowBuyButton(false);
-                  }
-                }
+                setShowBuyLayerPopup(true);
               }}
             >
-              {item.isOwned && (
-                <p className="absolute px-2 py-1 text-sm -left-2 -top-2 bg-main-yellow rounded-xl">
-                  보유 중
-                </p>
-              )}
-              <Image
-                src={item.image}
-                alt={item.name}
-                width={80}
-                height={80}
-                className="object-contain w-[80px] h-[80px]"
-              />
-              <div className="flex flex-col items-center gap-0.5 mt-2">
-                <p className="font-semibold text-[#ffad20]">{item.name}</p>
-                <p className="text-sm text-center text-gray-500">{item.description}</p>
-                <p className="mt-2 text-sm text-main-text">{item.price} 코인</p>
+              구매하기
+            </button>
+          )}
+        </div>
+
+        <div className="w-full mt-auto h-[450px] mb-[70px] bg-content-yellow overflow-y-scroll">
+          {/* 아이템 목록 */}
+          <div className="grid w-full grid-cols-2 gap-4 px-6 py-6">
+            {filteredItems.map((item, index) => (
+              <div
+                key={index}
+                className={clsx(
+                  'relative flex flex-col items-center justify-center p-4 shadow-md cursor-pointer rounded-xl bg-main-background',
+                  item.id === selectedItemId
+                    ? 'bg-bg-yellow'
+                    : item.isOwned
+                      ? 'bg-gray-200'
+                      : 'hover:bg-bg-yellow'
+                )}
+                onClick={() => {
+                  if (item.category !== '배경') {
+                    setSelectedItemId(item.id);
+                    setBuyItem(item.appliedImage);
+                    if (!item.isOwned) {
+                      setShowBuyButton(true);
+                    } else {
+                      setShowBuyButton(false);
+                    }
+                  } else {
+                    if (item.name == '벚꽃 배경') {
+                      setBuyBackground('/images/background/store_cherryBlossom.png');
+                    } else {
+                      setBuyBackground('/images/background/store_beach.png');
+                    }
+                    setSelectedItemId(item.id);
+                    if (!item.isOwned) {
+                      setShowBuyButton(true);
+                    } else {
+                      setShowBuyButton(false);
+                    }
+                  }
+                }}
+              >
+                {item.isOwned && (
+                  <p className="absolute px-2 py-1 text-sm -left-2 -top-2 bg-main-yellow rounded-xl">
+                    보유 중
+                  </p>
+                )}
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  width={80}
+                  height={80}
+                  className="object-contain w-[80px] h-[80px]"
+                />
+                <div className="flex flex-col items-center gap-0.5 mt-2">
+                  <p className="font-semibold text-[#ffad20]">{item.name}</p>
+                  <p className="text-sm text-center text-gray-500">{item.description}</p>
+                  <p className="mt-2 text-sm text-main-text">{item.price} 코인</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
