@@ -7,15 +7,15 @@ import React, { useState } from 'react';
 const Page = () => {
   const [selectedCategory, setSelectedCategory] = useState<'배경' | '액세서리'>('배경');
 
-  const [userData, setUserData] = useState({
-    userId: 'user1234',
-    nickname: '감자몽러버',
-    gender: 'female',
-    birthday: '2000-05-01',
-    character: '/images/characters/basic_character.png',
-    background: '/images/background/store_cherryBlossom.png',
-    coin: 1500,
-  });
+  // const [userData, setUserData] = useState({
+  //   userId: 'user1234',
+  //   nickname: '감자몽러버',
+  //   gender: 'female',
+  //   birthday: '2000-05-01',
+  //   character: '/images/characters/basic_character.png',
+  //   background: '/images/background/store_cherryBlossom.png',
+  //   coin: 1500,
+  // });
 
   const [items, setItems] = useState([
     {
