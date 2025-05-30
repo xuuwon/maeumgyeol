@@ -23,7 +23,7 @@ const Page = () => {
     <div
       className={clsx(
         'h-screen bg-[url(/images/background/cherryBlossom_mobile.png)] sm:bg-[url(/images/background/cherryBlossom_tablet.png)] bg-center bg-no-repeat bg-cover px-4 sm:px-6 md:px-8',
-        'flex flex-col items-center justify-around py-6'
+        'flex flex-col items-center justify-around py-9'
       )}
     >
       <div className="flex flex-col items-center gap-4">
