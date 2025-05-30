@@ -105,7 +105,7 @@ body {
 
 .react-calendar__tile--now {
   color: #00796b !important;
-  background: none !important;
+  background: #00796b3a !important;
 }
 
 .react-calendar__tile:focus,
