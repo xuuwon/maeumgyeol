@@ -80,7 +80,7 @@ interface EmotionRatioData {
   value: number;
 }
 
-export default function Page() {
+export default function MonthAnalysis() {
   const { weekHappinessData, emotionRatioData } = useMemo(() => {
     const weekStats: Record<string, { total: number; happy: number }> = {};
     const emotionCounts: Record<EmotionType, number> = {
