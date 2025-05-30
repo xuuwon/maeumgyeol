@@ -31,9 +31,8 @@ const slides = [
   },
 ];
 
-const Page = ({ isFirstLogin }: { isFirstLogin: boolean }) => {
+const Page = () => {
   const router = useRouter();
-  console.log(isFirstLogin);
 
   //   useEffect(() => {
   //     if (!isFirstLogin) {
