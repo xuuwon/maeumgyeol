@@ -13,6 +13,7 @@ import {
   LabelList,
 } from 'recharts';
 import { useMemo } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7f50', '#a29bfe'];
 
@@ -81,6 +82,9 @@ interface EmotionRatioData {
 }
 
 export default function Page() {
+  const isMobile = useMediaQuery({ maxWidth: 768 }); // 모바일 조건
+  const isIphoneSE = useMediaQuery({ maxWidth: 376 });
+
   const { weekHappinessData, emotionRatioData } = useMemo(() => {
     const weekStats: Record<string, { total: number; happy: number }> = {};
     const emotionCounts: Record<EmotionType, number> = {
@@ -171,7 +175,7 @@ export default function Page() {
               nameKey="name"
               cx="50%"
               cy="50%"
-              outerRadius={90}
+              outerRadius={isIphoneSE ? 35 : isMobile ? 50 : 90}
               label={({ name, value }: { name: EmotionType; value: number }) => `${name} ${value}%`}
             >
               {emotionRatioData.map((entry, index) => (
