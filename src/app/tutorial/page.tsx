@@ -31,11 +31,7 @@ const slides = [
   },
 ];
 
-interface PageProps {
-  isFirstLogin: boolean;
-}
-
-const Page = ({ isFirstLogin }: PageProps) => {
+const Page = ({ isFirstLogin }: { isFirstLogin: boolean }) => {
   const router = useRouter();
   console.log(isFirstLogin);
 
