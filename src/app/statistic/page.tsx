@@ -121,7 +121,7 @@ export default function Page() {
           </div>
 
           {/* 주 전체 감정 비율 (원형 그래프) */}
-          <div className="flex flex-col w-full h-auto gap-4 p-4 border border-main-yellow rounded-xl">
+          <div className="flex flex-col w-full h-auto gap-4 p-4 mb-10 border border-main-yellow rounded-xl">
             <h2 className="mb-4 text-lg font-bold">주 전체 감정 비율</h2>
             <ResponsiveContainer width="100%" height={320}>
               <PieChart>

@@ -195,7 +195,7 @@ export default function MonthAnalysis({
         </ResponsiveContainer>
       </div>
 
-      <div className="flex flex-col w-full h-auto gap-4 p-4 mb-10 border border-main-yellow rounded-xl">
+      <div className="flex flex-col w-full h-auto gap-4 p-4 border border-main-yellow rounded-xl">
         <h2 className="mb-4 text-lg font-bold">월 전체 감정 비율</h2>
         <ResponsiveContainer width="100%" height={320}>
           <PieChart>
@@ -215,6 +215,10 @@ export default function MonthAnalysis({
             <Legend />
           </PieChart>
         </ResponsiveContainer>
+      </div>
+
+      <div className="flex flex-col items-center w-full h-auto gap-4 p-4 mb-10 border bg-bg-yellow border-main-yellow rounded-xl">
+        <p>이번 달도 고생 많으셨습니다! 다음 달도 힘내 보아요! 😋</p>
       </div>
     </div>
   );
