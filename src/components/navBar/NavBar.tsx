@@ -13,7 +13,7 @@ const NavBar = () => {
   return (
     <div
       className={clsx(
-        'fixed bottom-0 left-0 flex items-center justify-between w-full h-[70px] px-8 sm:px-10 md:px-12 bg-main-background'
+        'fixed bottom-0 left-0 flex items-start justify-between w-full h-[70px] pt-5 px-8 sm:px-10 md:px-12 bg-main-background'
       )}
       style={{
         maxWidth: '768px',
