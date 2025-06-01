@@ -32,7 +32,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <link rel="apple-touch-icon" href="/images/icon.png" />
-        <link rel="apple-touch-icon" href="/images/icon.png" />
       </head>
       <body className="bg-gray-100">
         <div className="w-full max-w-[768px] mx-auto min-h-screen bg-main-background">
