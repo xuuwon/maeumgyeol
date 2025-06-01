@@ -13,43 +13,44 @@ import {
   LabelList,
 } from 'recharts';
 import { useMemo } from 'react';
+import clsx from 'clsx';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7f50', '#a29bfe'];
 
-type EmotionType = '행복 😊' | '슬픔 😢' | '불안 😟' | '중립 😶' | '분노 😠';
+type EmotionType = '행복' | '슬픔' | '불안' | '중립' | '분노';
 
-const emotionTimeline: Record<string, EmotionType> = {
-  '2025-05-01': '행복 😊',
-  '2025-05-02': '행복 😊',
-  '2025-05-03': '중립 😶',
-  '2025-05-04': '불안 😟',
-  '2025-05-05': '행복 😊',
-  '2025-05-06': '중립 😶',
-  '2025-05-07': '슬픔 😢',
-  '2025-05-08': '중립 😶',
-  '2025-05-09': '불안 😟',
-  '2025-05-10': '분노 😠',
-  '2025-05-11': '중립 😶',
-  '2025-05-12': '행복 😊',
-  '2025-05-13': '중립 😶',
-  '2025-05-14': '중립 😶',
-  '2025-05-15': '불안 😟',
-  '2025-05-16': '슬픔 😢',
-  '2025-05-17': '중립 😶',
-  '2025-05-18': '행복 😊',
-  '2025-05-19': '중립 😶',
-  '2025-05-20': '불안 😟',
-  '2025-05-21': '행복 😊',
-  '2025-05-22': '중립 😶',
-  '2025-05-23': '중립 😶',
-  '2025-05-24': '분노 😠',
-  '2025-05-25': '불안 😟',
-  '2025-05-26': '슬픔 😢',
-  '2025-05-27': '중립 😶',
-  '2025-05-28': '중립 😶',
-  '2025-05-29': '행복 😊',
-  '2025-05-30': '불안 😟',
-  '2025-05-31': '중립 😶',
+const emotionTimeline: Record<string, EmotionType | ''> = {
+  '2025-05-01': '행복',
+  '2025-05-02': '행복',
+  '2025-05-03': '중립',
+  '2025-05-04': '',
+  '2025-05-05': '행복',
+  '2025-05-06': '중립',
+  '2025-05-07': '슬픔',
+  '2025-05-08': '',
+  '2025-05-09': '불안',
+  '2025-05-10': '분노',
+  '2025-05-11': '중립',
+  '2025-05-12': '',
+  '2025-05-13': '중립',
+  '2025-05-14': '중립',
+  '2025-05-15': '',
+  '2025-05-16': '슬픔',
+  '2025-05-17': '중립',
+  '2025-05-18': '',
+  '2025-05-19': '중립',
+  '2025-05-20': '불안',
+  '2025-05-21': '',
+  '2025-05-22': '중립',
+  '2025-05-23': '중립',
+  '2025-05-24': '',
+  '2025-05-25': '불안',
+  '2025-05-26': '슬픔',
+  '2025-05-27': '',
+  '2025-05-28': '중립',
+  '2025-05-29': '행복',
+  '2025-05-30': '',
+  '2025-05-31': '중립',
 };
 
 function getWeekLabel(dateStr: string): string | null {
@@ -80,20 +81,31 @@ interface EmotionRatioData {
   value: number;
 }
 
-export default function MonthAnalysis() {
+export default function MonthAnalysis({
+  isMonth,
+  setIsMonth,
+}: {
+  isMonth: boolean;
+  setIsMonth: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const { weekHappinessData, emotionRatioData } = useMemo(() => {
     const weekStats: Record<string, { total: number; happy: number }> = {};
     const emotionCounts: Record<EmotionType, number> = {
-      '행복 😊': 0,
-      '슬픔 😢': 0,
-      '불안 😟': 0,
-      '중립 😶': 0,
-      '분노 😠': 0,
+      행복: 0,
+      슬픔: 0,
+      불안: 0,
+      중립: 0,
+      분노: 0,
     };
 
     const entries = Object.entries(emotionTimeline).filter(([date]) => date.startsWith('2025-05'));
 
+    // 빈값 없는 항목만 필터링
+    const filteredEntries = entries.filter(([, emotion]) => emotion);
+
     for (const [dateStr, emotion] of entries) {
+      if (!emotion) continue; // 빈값 건너뛰기
+
       const weekLabel = getWeekLabel(dateStr);
       if (!weekLabel) continue;
 
@@ -120,7 +132,8 @@ export default function MonthAnalysis() {
       (a, b) => Number(a.week.replace(/\D/g, '')) - Number(b.week.replace(/\D/g, ''))
     );
 
-    const totalDays = entries.length;
+    const totalDays = filteredEntries.length; // 빈값 제외한 날짜 수
+
     const emotionRatioData: EmotionRatioData[] = Object.entries(emotionCounts).map(
       ([emotion, count]) => ({
         name: emotion as EmotionType,
@@ -140,8 +153,29 @@ export default function MonthAnalysis() {
 
   return (
     <div className="flex flex-col min-h-screen gap-5 px-4 mx-auto mb-[70px] sm:px-6 md:px-8">
-      <div className="flex flex-col items-center justify-center gap-2 text-xl h-44 iphoneSE:mt-5">
+      <div className="flex flex-col items-center justify-center h-40 gap-2 pt-6 text-xl iphoneSE:mt-5">
         <p>감정 분석 보고서</p>
+      </div>
+
+      <div className="flex w-full gap-4">
+        <span
+          className={clsx(
+            'flex-1 py-2 text-center border cursor-pointer rounded-xl border-main-yellow',
+            !isMonth && 'bg-content-yellow'
+          )}
+          onClick={() => setIsMonth(false)}
+        >
+          주간
+        </span>
+        <span
+          className={clsx(
+            'flex-1 py-2 text-center border cursor-pointer rounded-xl border-main-yellow',
+            isMonth && 'bg-content-yellow'
+          )}
+          onClick={() => setIsMonth(true)}
+        >
+          월간
+        </span>
       </div>
 
       <div className="flex flex-col w-full h-auto gap-4 p-4 border border-main-yellow rounded-xl">
