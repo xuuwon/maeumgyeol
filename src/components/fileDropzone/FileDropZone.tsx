@@ -1,28 +1,38 @@
 'use client';
 
 import clsx from 'clsx';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 const FileDropZone = ({
   previews,
   setPreviews,
+  setFiles,
 }: {
   previews: string[];
   setPreviews: React.Dispatch<React.SetStateAction<string[]>>;
+  setFiles: React.Dispatch<React.SetStateAction<File[]>>;
 }) => {
+  const [internalFiles, setInternalFiles] = useState<File[]>([]);
+
+  // ⚠️ 렌더 중 setState 방지: 상태 변화 이후 setFiles 호출
+  useEffect(() => {
+    setFiles(internalFiles);
+  }, [internalFiles, setFiles]);
+
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      setPreviews((prev) => {
-        const remainingSlots = 5 - prev.length;
-        const filesToAdd = acceptedFiles.slice(0, remainingSlots);
-        const urls = filesToAdd.map((file) => URL.createObjectURL(file));
-        return [...prev, ...urls];
-      });
+      const remainingSlots = 5 - previews.length;
+      const filesToAdd = acceptedFiles.slice(0, remainingSlots);
+      const urls = filesToAdd.map((file) => URL.createObjectURL(file));
+
+      setPreviews((prev) => [...prev, ...urls]);
+      setInternalFiles((prev) => [...prev, ...filesToAdd]);
     },
-    [setPreviews]
+    [previews.length, setPreviews]
   );
 
+  // URL 해제
   useEffect(() => {
     return () => {
       previews.forEach((url) => URL.revokeObjectURL(url));
@@ -30,7 +40,16 @@ const FileDropZone = ({
   }, [previews]);
 
   const removePreview = (urlToRemove: string) => {
-    setPreviews((prev) => prev.filter((url) => url !== urlToRemove)); // url 다른 것만 남기기
+    const index = previews.findIndex((url) => url === urlToRemove);
+    if (index === -1) return;
+
+    setPreviews((prev) => prev.filter((url) => url !== urlToRemove));
+    setInternalFiles((prev) => {
+      const newFiles = [...prev];
+      newFiles.splice(index, 1);
+      return newFiles;
+    });
+
     URL.revokeObjectURL(urlToRemove);
   };
 
@@ -44,7 +63,6 @@ const FileDropZone = ({
 
   return (
     <div className="space-y-4">
-      {/* Dropzone 영역 */}
       <div
         {...getRootProps()}
         className={clsx(
@@ -52,7 +70,8 @@ const FileDropZone = ({
           previews.length > 0 ? 'py-4' : 'py-8'
         )}
       >
-        {previews.length > 0 && (
+        <input {...getInputProps()} />
+        {previews.length > 0 ? (
           <div className="flex flex-wrap gap-4">
             {previews.map((src, index) => (
               <div key={index} className="relative group">
@@ -63,8 +82,8 @@ const FileDropZone = ({
                 />
                 <button
                   onClick={(event) => {
-                    removePreview(src);
                     event.stopPropagation();
+                    removePreview(src);
                   }}
                   className="absolute top-[-8px] right-[-8px] bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center hover:bg-red-600"
                   aria-label="remove image"
@@ -74,9 +93,9 @@ const FileDropZone = ({
               </div>
             ))}
           </div>
+        ) : (
+          <p>클릭해서 파일을 업로드하세요 (최대 5장)</p>
         )}
-        <input {...getInputProps()} />
-        {previews.length === 0 && <p>클릭해서 파일을 업로드하세요 (최대 5장)</p>}
       </div>
     </div>
   );

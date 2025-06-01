@@ -28,6 +28,7 @@ const PageClient = ({ date }: { date: string }) => {
   const [weather, setWeather] = useState<string>('날씨');
   const [title, setTitle] = useState<string>('');
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
 
   const [showRewriteModal, setShowRewriteModal] = useState<boolean>(false);
   const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
@@ -110,13 +111,15 @@ const PageClient = ({ date }: { date: string }) => {
     if (weather === '날씨' || title.trim().length === 0 || textContent.trim().length === 0) {
       setShowRewriteModal(true);
     } else {
-      const formData = {
-        date: todayDate,
-        weather,
-        title,
-        content,
-        imagePreviews,
-      };
+      const formData = new FormData();
+      formData.append('date', todayDate);
+      formData.append('weather', weather);
+      formData.append('title', title);
+      formData.append('content', content);
+
+      imageFiles.forEach((file) => {
+        formData.append('images', file);
+      });
 
       console.log('제출된 데이터:', formData);
       setShowSaveModal(true);
@@ -215,7 +218,11 @@ const PageClient = ({ date }: { date: string }) => {
         </div>
 
         {/* 이미지 업로드 */}
-        <FileDropZone previews={imagePreviews} setPreviews={setImagePreviews} />
+        <FileDropZone
+          previews={imagePreviews}
+          setPreviews={setImagePreviews}
+          setFiles={setImageFiles}
+        />
 
         {/* 본문 입력 (Tiptap) */}
         <div>
