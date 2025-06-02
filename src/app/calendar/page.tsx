@@ -97,7 +97,7 @@ const Page = () => {
       )}
       <div className="flex flex-col items-center min-h-screen p-6">
         <div className="flex flex-col items-center justify-center gap-2 text-xl h-36 iphoneSE:mt-5">
-          <p>마음 챙김 콘텐츠</p>
+          <p>나의 캘린더</p>
         </div>
 
         <div className="w-full h-auto mb-20">
