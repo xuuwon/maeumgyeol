@@ -65,7 +65,7 @@ const Page = () => {
                 <Image
                   src={slide.imgSrc}
                   alt={slide.title}
-                  width={250}
+                  width={220}
                   height={300}
                   className="object-contain"
                   priority={idx === 0}
