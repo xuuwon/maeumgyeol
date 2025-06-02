@@ -48,7 +48,7 @@ const PageClient = ({ date }: { date: string }) => {
 
   return (
     <div className="flex flex-col gap-10 px-4 mx-auto sm:px-6 md:px-8">
-      <div className="flex flex-col items-center justify-center h-32 gap-2 text-xl iphoneSE:mt-5">
+      <div className="flex flex-col items-center justify-end gap-2 text-xl h-28 iphoneSE:mt-5">
         <p>{formattedDate}</p>
         <p>오늘의 일기</p>
       </div>
