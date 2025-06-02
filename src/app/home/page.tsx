@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 
 const Page = () => {
-  const today = new Date();
+  const today = new Date(new Date().toISOString().split('T')[0]); // "YYYY-MM-DD"
   const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
 
   const year = today.getFullYear();
