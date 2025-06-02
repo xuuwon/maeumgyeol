@@ -121,7 +121,15 @@ const PageClient = ({ date }: { date: string }) => {
         formData.append('images', file);
       });
 
-      console.log('제출된 데이터:', formData);
+      for (const [key, value] of formData.entries()) {
+        if (value instanceof File) {
+          const objectUrl = URL.createObjectURL(value);
+          console.log(key, value.name, objectUrl);
+          // 미리보기 이미지에 이 objectUrl을 src로 쓰면 됨
+        } else {
+          console.log(key, value);
+        }
+      }
       setShowSaveModal(true);
     }
   };

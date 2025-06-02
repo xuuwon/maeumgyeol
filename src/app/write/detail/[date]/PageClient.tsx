@@ -10,16 +10,10 @@ const PageClient = ({ date }: { date: string }) => {
   const data = {
     date: '2025-05-26',
     weather: 'sunny',
-    title: '별 거 없는 하루',
+    title: '혼자여서 더 좋았던 날',
     content:
-      '<p>오늘은 <mark class="custom-highlight" style="background-color: #81C784;">캡스톤 팀원들</mark>과 떡볶이를 먹었다. 아주 맛있고 배불렀다. 😋</p><p>분식집에 앉아 이런저런 이야기를 나누며 오랜만에 웃을 일이 많았다. 프로젝트 이야기도 자연스럽게 풀리면서 팀워크도 더 끈끈해진 느낌이었다.</p><p>그리고 오버워치도 했는데 많이 이기고<span style="color: #F57C00"> 적팀에게 칭찬도 받아서</span> 기분이 아주 좋다.</p><p>예전에 실수할까봐 위축됐던 내 플레이가 <span style="color: #283593"><em>오늘은 꽤 날카롭고 과감했다.</em></span> 나도 모르게 마이크로 "<s>나 좀 잘하는데?</s>"라는 말이 나올 정도였다.</p><p>이런 사소한 하루가 나중에 돌아보면 가장 그리울지도 모른다는 생각이 든다.</p><p><mark class="custom-highlight" style="background-color: #81C784;">매일이 오늘 같으면 좋겠다.</mark></p><p></p>',
-    imageUrls: [
-      'https://news.samsungdisplay.com/wp-content/uploads/2018/08/8.jpg',
-      'https://news.samsungdisplay.com/wp-content/uploads/2018/08/8.jpg',
-      'https://news.samsungdisplay.com/wp-content/uploads/2018/08/8.jpg',
-      'https://news.samsungdisplay.com/wp-content/uploads/2018/08/8.jpg',
-      'https://news.samsungdisplay.com/wp-content/uploads/2018/08/8.jpg',
-    ],
+      '<p><span>오랜만에 혼자 영화관에 갔다. </span></p><p><span>큰 기대 없이 본 영화였는데, 울고 웃고 다 하고 나니 마음이 꽤 편해졌다. 옆 사람 신경 안 써도 되는 자리에서, </span><mark class="custom-highlight" style="background-color: #81C784;">혼자만의 시간에 집중</mark><span>할 수 있었던 게 참 좋았다. 영화 끝나고 근처 카페 가서 멍하니 앉아 있다가 </span><span style="color: #283593">책도 좀 읽었다.</span><span> 누구 눈치도 안 보고, 하고 싶은 거 마음대로 한 하루. 오히려 혼자라서 더 자유롭고 좋았다. </span><span style="color: #F57C00"><em>이런 하루, 자주 만들고 싶다.</em></span></p>',
+    imageUrls: [],
     emotion: {
       label: 1,
       name: '행복' as EmotionName,
