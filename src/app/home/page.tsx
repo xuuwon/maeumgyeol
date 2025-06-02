@@ -7,15 +7,19 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 
 const Page = () => {
-  const today = new Date(new Date().toISOString().split('T')[0]); // "YYYY-MM-DD"
-  const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+  const now = new Date();
 
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1;
-  const day = today.getDate();
+  const year = now.getFullYear();
+  const month = now.getMonth(); // 0부터 시작하니까
+  const day = now.getDate();
+
+  const today = new Date(year, month, day); // 한국 시간 기준 오늘 자정
+
+  const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
   const dayName = days[today.getDay()];
-  const todayDate = `${year}년 ${month}월 ${day}일`;
-  const todayDateFormatted = `${year}-${month}-${day}`; // "2025-05-27" 같은 형식
+
+  const todayDate = `${year}년 ${month + 1}월 ${day}일`;
+  const todayDateFormatted = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
   const router = useRouter();
 
