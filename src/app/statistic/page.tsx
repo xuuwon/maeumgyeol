@@ -84,7 +84,7 @@ export default function Page() {
       ) : (
         <div className="flex flex-col min-h-screen gap-5 px-4 mx-auto mb-[70px] sm:px-6 md:px-8">
           <div className="flex flex-col items-center justify-center h-40 gap-2 pt-6 text-xl">
-            <p>감정 분석 보고서</p>
+            <p>감정 분석 리포트</p>
           </div>
 
           <div className="flex w-full gap-4">
