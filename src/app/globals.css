@@ -115,3 +115,14 @@ body {
   outline: none !important;
   box-shadow: none !important;
 }
+
+/* 페이지네이션 기본 색상 */
+.swiper-pagination-bullet {
+  background-color: #e5e7eb !important;
+  opacity: 1 !important;
+}
+
+/* 현재 페이지네이션 색상 */
+.swiper-pagination-bullet-active {
+  background-color: #ffd600 !important;
+}

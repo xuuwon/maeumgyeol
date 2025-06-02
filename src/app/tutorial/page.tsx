@@ -6,28 +6,29 @@ import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { useRouter } from 'next/navigation';
+import '../globals.css';
 
 const slides = [
   {
-    title: '회원가입 완료',
-    description: '',
+    title: '오늘의 감정 알아보기',
+    description: 'AI가 당신의 감정을 섬세하게 분석해 드려요.',
   },
   {
-    title: '위치기반 독립서점 추천',
-    description: '당신의 위치 정보를 통해 독립서점을 손쉽게 찾아드립니다.',
+    title: '일기를 쓰고 보상 받기',
+    description: '하루를 기록하면 코인을 받을 수 있어요!',
   },
   {
-    title: 'AR 카메라로 생생한 후기',
-    description: 'AR 리뷰 시스템으로 다른 사용자들의 생생한 후기를 볼 수 있어요.',
+    title: '마음 챙김 콘텐츠 체험',
+    description: '세 가지 마음 챙김 콘텐츠로 불안한 감정을 다독여 보세요.',
   },
   {
-    title: '독립서점 뉴스레터',
-    description: '다양한 독립서점 소식을 뉴스레터로 받아보세요.',
+    title: '감자몽 꾸미기',
+    description: '귀여운 감자몽을 다양한 아이템으로 자유롭게 꾸며보세요.',
   },
   {
-    title: '사용자 맞춤 독립서점 추천',
-    description: '당신의 취향을 기반으로 맞춤형 독립서점을 추천해드려요.',
-    cta: '지금 취향테스트 해볼까요',
+    title: '감정 리포트 돌아보기',
+    description: '주간·월간 리포트를 통해 나의 감정 변화를 확인해요.',
+    cta: '함께 시작하기',
   },
 ];
 
@@ -63,10 +64,10 @@ const Page = () => {
                   <p className="text-base text-gray-600">{slide.description}</p>
                 )}
               </div>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col items-center gap-4">
                 {slide.cta && (
                   <button
-                    className="bg-[#5e524b] text-white py-3 rounded-full text-sm"
+                    className="w-[198px] max-w-sm sm:w-full h-12 border border-1 border-main-yellow rounded-xl flex justify-center items-center bg-content-yellow hover:bg-main-yellow"
                     onClick={handleSkip}
                   >
                     {slide.cta}
