@@ -33,12 +33,23 @@ const Page = () => {
         <p className="text-xl">오늘도 즐거운 하루 보내세요!</p>
       </div>
 
-      <div className="drop-shadow-[10px_16px_10px_rgba(0,0,0,0.40)]">
+      <div className="flex flex-col items-center gap-3">
+        <div
+          className="relative max-w-xs px-5 py-3 text-white cursor-pointer bg-main-yellow rounded-2xl"
+          onClick={() => {
+            router.push('/contents/level3');
+          }}
+        >
+          오늘의 마음 챙김 콘텐츠를 확인해 봐!
+          {/* 꼬리 */}
+          <div className="absolute w-4 h-4 rotate-45 bg-main-yellow -bottom-2 left-16"></div>
+        </div>
         <Image
           src="/images/characters/basic_character.png" // 예시
           alt="메인 캐릭터"
           width={230}
           height={230}
+          className="drop-shadow-[10px_16px_10px_rgba(0,0,0,0.40)]"
         />
       </div>
 
