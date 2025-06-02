@@ -34,7 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="apple-touch-icon" href="/images/icon.png" />
       </head>
       <body className="bg-gray-100">
-        <div className="w-full max-w-[768px] mx-auto min-h-screen bg-main-background">
+        <div className="w-full max-w-[700px] mx-auto min-h-screen bg-main-background">
           <div className="relative h-full">
             {showNavBar && <Header />}
             {children}
