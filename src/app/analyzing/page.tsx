@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import React from 'react';
 
-const Page = () => {
+const Analyzing = () => {
   return (
     <div className="flex flex-col items-center h-screen">
       <div className="flex flex-col items-center gap-3 text-xl pt-36">
@@ -22,4 +22,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default Analyzing;

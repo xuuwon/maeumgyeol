@@ -1,11 +1,14 @@
 'use client';
 
 import Button from '@/components/button/Button';
+// import { useDiaryStore } from '@/stores/diaryStore';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
 const PageClient = ({ date }: { date: string }) => {
   console.log(date);
+  // const { diary } = useDiaryStore();
+  // console.log(diary);
 
   const data = {
     date: '2025-05-26',

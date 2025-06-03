@@ -14,6 +14,8 @@ import FileDropZone from '@/components/fileDropzone/FileDropZone';
 import { ToolBar } from '@/components/toolBar/ToolBar';
 import LayerPopup from '@/components/layerPopup/LayerPopup';
 import { customHighlight } from '@/extension/customHighlight';
+// import Analyzing from '@/app/analyzing/page';
+// import { useDiaryStore } from '@/stores/diaryStore';
 
 const PageClient = ({ date }: { date: string }) => {
   console.log(date);
@@ -104,35 +106,80 @@ const PageClient = ({ date }: { date: string }) => {
     };
   }, []);
 
+  // const writeDiary = useDiaryStore((state) => state.writeDiary);
+  // const isLoading = useDiaryStore((state) => state.isLoading);
+  // const error = useDiaryStore((state) => state.error);
+  // const success = useDiaryStore((state) => state.success);
+
   const handleSubmit = () => {
+    // 제출 버튼 눌렀을 때 (API 호출 X)
     const content = editor?.getHTML() ?? '';
     const textContent = editor?.getText() ?? '';
 
     if (weather === '날씨' || title.trim().length === 0 || textContent.trim().length === 0) {
       setShowRewriteModal(true);
-    } else {
-      const formData = new FormData();
-      formData.append('date', todayDate);
-      formData.append('weather', weather);
-      formData.append('title', title);
-      formData.append('content', content);
-
-      imageFiles.forEach((file) => {
-        formData.append('images', file);
-      });
-
-      for (const [key, value] of formData.entries()) {
-        if (value instanceof File) {
-          const objectUrl = URL.createObjectURL(value);
-          console.log(key, value.name, objectUrl);
-          // 미리보기 이미지에 이 objectUrl을 src로 쓰면 됨
-        } else {
-          console.log(key, value);
-        }
-      }
-      setShowSaveModal(true);
+      return;
     }
+
+    // const token = localStorage.getItem('access_token') ?? '';
+
+    // await writeDiary(
+    //   {
+    //     date: todayDate,
+    //     weather,
+    //     title,
+    //     content,
+    //     images: imageFiles,
+    //   },
+    //   token
+    // );
+
+    // if (success) {
+    //   setShowSaveModal(true);
+    // }
+
+    const formData = new FormData();
+    formData.append('date', todayDate);
+    formData.append('weather', weather);
+    formData.append('title', title);
+    formData.append('content', content);
+
+    imageFiles.forEach((file) => {
+      formData.append('images', file);
+    });
+
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        const objectUrl = URL.createObjectURL(value);
+        console.log(key, value.name, objectUrl);
+        // 미리보기 이미지에 이 objectUrl을 src로 쓰면 됨
+      } else {
+        console.log(key, value);
+      }
+    }
+    setShowSaveModal(true);
   };
+
+  // const handleDiary = async () => {
+  //   const token = localStorage.getItem('access_token') ?? '';
+
+  //   await writeDiary(
+  //     {
+  //       date: todayDate,
+  //       weather,
+  //       title,
+  //       content,
+  //       images: imageFiles,
+  //     },
+  //     token
+  //   );
+
+  //   if (success) {
+  //     // 제출 및 분석 성공 -> 상세 페이지로 이동
+  //   }
+  // };
+
+  // if (isLoading) return <Analyzing />;
 
   return (
     <>
