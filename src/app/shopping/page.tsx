@@ -8,6 +8,18 @@ import React, { useState } from 'react';
 const Page = () => {
   const [selectedCategory, setSelectedCategory] = useState<'배경' | '액세서리'>('배경');
 
+  // const { items, setItems } = useItemStore();
+
+  // useEffect(() => {
+  //   const fetchItems = async () => {
+  //     const res = await fetch('/api/items'); // API 경로 예시
+  //     const data = await res.json();
+  //     setItems(data);
+  //   };
+
+  //   fetchItems();
+  // }, [setItems]);
+
   const [userData, setUserData] = useState({
     userId: 'user1234',
     nickname: '감자몽러버',

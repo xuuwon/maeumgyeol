@@ -1,11 +1,14 @@
 'use client';
 
+// import { useItemStore } from '@/stores/storeStore';
 import clsx from 'clsx';
 import Image from 'next/image';
 import React, { useState } from 'react';
 
 const Page = () => {
   const [selectedCategory, setSelectedCategory] = useState<'배경' | '액세서리'>('배경');
+
+  // const { ownedItems } = useItemStore();
 
   // const [userData, setUserData] = useState({
   //   userId: 'user1234',
