@@ -12,7 +12,7 @@ const PageClient = ({ date }: { date: string }) => {
 
   const data = {
     date: '2025-05-26',
-    weather: 'sunny',
+    weather: '맑음' as WeatherName,
     title: '혼자여서 더 좋았던 날',
     content:
       '<p><span>오랜만에 혼자 영화관에 갔다. </span></p><p><span>큰 기대 없이 본 영화였는데, 울고 웃고 다 하고 나니 마음이 꽤 편해졌다. 옆 사람 신경 안 써도 되는 자리에서, </span><mark class="custom-highlight" style="background-color: #81C784;">혼자만의 시간에 집중</mark><span>할 수 있었던 게 참 좋았다. 영화 끝나고 근처 카페 가서 멍하니 앉아 있다가 </span><span style="color: #283593">책도 좀 읽었다.</span><span> 누구 눈치도 안 보고, 하고 싶은 거 마음대로 한 하루. 오히려 혼자라서 더 자유롭고 좋았다. </span><span style="color: #F57C00"><em>이런 하루, 자주 만들고 싶다.</em></span></p>',
@@ -40,6 +40,7 @@ const PageClient = ({ date }: { date: string }) => {
   const router = useRouter();
 
   type EmotionName = '중립' | '행복' | '슬픔' | '불안' | '분노';
+  type WeatherName = '맑음' | '흐림' | '비' | '눈';
 
   const emotionToEmoji: Record<EmotionName, string> = {
     중립: '🙂',
@@ -47,6 +48,13 @@ const PageClient = ({ date }: { date: string }) => {
     슬픔: '😭',
     불안: '😰',
     분노: '😠',
+  };
+
+  const weatherToEmoji: Record<WeatherName, string> = {
+    맑음: '☀️',
+    흐림: '☁️',
+    비: '🌧️',
+    눈: '❄️',
   };
 
   return (
@@ -58,7 +66,9 @@ const PageClient = ({ date }: { date: string }) => {
 
       {/* 일기 데이터 */}
       <div className="flex flex-col gap-3 w-full min-h-[197px] border border-1 border-main-yellow bg-bg-yellow rounded-xl p-4">
-        <h2 className="text-xl text-[#ffad20]">{data.title}</h2>
+        <h2 className="text-xl text-[#ffad20]">
+          {weatherToEmoji[data.weather]} {data.title} {weatherToEmoji[data.weather]}
+        </h2>
         <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: data.content }} />
 
         {data.imageUrls.length !== 0 && (
