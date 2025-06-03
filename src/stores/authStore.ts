@@ -1,18 +1,18 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
-interface SignUpPayload {
+type SignUpPayload = {
   id: string;
   password: string;
   nickname: string;
-}
+};
 
-interface SignInPayload {
+type SignInPayload = {
   id: string;
   password: string;
-}
+};
 
-interface User {
+type User = {
   userId: string;
   nickname: string;
   gender: 'male' | 'female';
@@ -20,9 +20,9 @@ interface User {
   character: string;
   coin: number;
   isFirstLogin: boolean;
-}
+};
 
-interface AuthState {
+type AuthState = {
   isLoading: boolean;
 
   signUpError: string | null;
@@ -41,7 +41,7 @@ interface AuthState {
   signIn: (data: SignInPayload) => Promise<void>;
   fetchUser: () => Promise<void>;
   reset: () => void;
-}
+};
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   isLoading: false,

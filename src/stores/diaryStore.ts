@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-interface DiaryState {
+type DiaryState = {
   isLoading: boolean;
   error: string | null;
   success: boolean;
@@ -15,9 +15,9 @@ interface DiaryState {
     token: string
   ) => Promise<void>;
   diary: diaryDetail | null;
-}
+};
 
-interface diaryDetail {
+type diaryDetail = {
   date: string;
   weather: string;
   title: string;
@@ -25,7 +25,7 @@ interface diaryDetail {
   images: File[];
   emotion: string; // 변경 가능
   comment: string;
-}
+};
 
 export const useDiaryStore = create<DiaryState>((set) => ({
   isLoading: false,

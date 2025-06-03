@@ -1,16 +1,16 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
-interface calendars {
+type calendars = {
   [date: string]: string;
   // "2025-04-01": 행복,
   // "2025-04-02": 우울,
-}
+};
 
-interface CalendarStore {
+type CalendarStore = {
   emotions: calendars;
   fetchEmotions: (month: string, token: string) => Promise<void>;
-}
+};
 
 export const useCalendarStore = create<CalendarStore>((set) => ({
   emotions: {},
