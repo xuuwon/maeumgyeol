@@ -19,6 +19,7 @@ export default function Home() {
           alt="설명 텍스트"
           width={270}
           height={270}
+          className="sm:w-[330px]"
         />
       </div>
 
