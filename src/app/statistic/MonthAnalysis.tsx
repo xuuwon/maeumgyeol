@@ -14,6 +14,7 @@ import {
 } from 'recharts';
 import { useMemo } from 'react';
 import clsx from 'clsx';
+// import { useEmotionReportStore } from '@/stores/emotionReportStore';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7f50', '#a29bfe'];
 
@@ -88,6 +89,12 @@ export default function MonthAnalysis({
   isMonth: boolean;
   setIsMonth: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  // const { monthlyEmotionTimeline, fetchMonthlyTimeline } = useEmotionReportStore();
+
+  // useEffect(() => {
+  //   fetchMonthlyTimeline();
+  // }, []);
+
   const { weekHappinessData, emotionRatioData } = useMemo(() => {
     const weekStats: Record<string, { total: number; happy: number }> = {};
     const emotionCounts: Record<EmotionType, number> = {

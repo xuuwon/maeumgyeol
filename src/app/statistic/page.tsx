@@ -5,6 +5,7 @@ import { useMediaQuery } from 'react-responsive';
 import { useState } from 'react';
 import MonthAnalysis from './MonthAnalysis';
 import clsx from 'clsx';
+// import { useEmotionReportStore } from '@/stores/emotionReportStore';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7f50', '#a29bfe'];
 
@@ -26,6 +27,16 @@ interface EmotionRatioData {
 }
 
 export default function Page() {
+  // const {
+  //   weeklyEmotionTimeline,
+  //   fetchWeeklyTimeline,
+  // } = useEmotionReportStore();
+
+  // useEffect(() => {
+  //   fetchWeeklyTimeline();
+  //   fetchMonthlyTimeline();
+  // }, []);
+
   const isMobile = useMediaQuery({ maxWidth: 768 }); // 모바일 조건
   const isIphoneSE = useMediaQuery({ maxWidth: 376 });
 
