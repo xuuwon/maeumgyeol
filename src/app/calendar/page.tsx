@@ -1,9 +1,9 @@
 'use client';
 
 import LayerPopup from '@/components/layerPopup/LayerPopup';
-import { useCalendarStore } from '@/stores/calendarStore';
+// import { useCalendarStore } from '@/stores/calendarStore';
 import { useRouter } from 'next/navigation';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
@@ -62,36 +62,36 @@ const formatDate = (date: Date): string => {
 const Page = () => {
   const router = useRouter();
   const [showLayerPopup, setShowLayerPopup] = useState<boolean>(false);
-  const [currentMonth, setCurrentMonth] = useState<string>('');
+  // const [currentMonth, setCurrentMonth] = useState<string>('');
 
-  const { emotions, fetchEmotions } = useCalendarStore();
-  const token = localStorage.getItem('access_token');
-  console.log(emotions);
+  // const { emotions, fetchEmotions } = useCalendarStore();
+  // const token = localStorage.getItem('access_token');
+  // console.log(emotions);
 
-  const formatMonth = (date: Date) => {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    return `${year}-${month}`;
-  };
+  // const formatMonth = (date: Date) => {
+  //   const year = date.getFullYear();
+  //   const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  //   return `${year}-${month}`;
+  // };
 
   // 초기 설정
-  useEffect(() => {
-    const today = new Date();
-    setCurrentMonth(formatMonth(today));
-  }, []);
+  // useEffect(() => {
+  //   const today = new Date();
+  //   setCurrentMonth(formatMonth(today));
+  // }, []);
 
-  const handleMonthChange = ({ activeStartDate }: { activeStartDate: Date | null }) => {
-    if (!activeStartDate) return;
-    setCurrentMonth(formatMonth(activeStartDate));
-  };
+  // const handleMonthChange = ({ activeStartDate }: { activeStartDate: Date | null }) => {
+  //   if (!activeStartDate) return;
+  //   setCurrentMonth(formatMonth(activeStartDate));
+  // };
 
-  // 감지해서 감정 데이터 가져오기
-  useEffect(() => {
-    console.log(currentMonth);
-    if (token && currentMonth) {
-      fetchEmotions(currentMonth, token);
-    }
-  }, [fetchEmotions, token, currentMonth]);
+  // // 감지해서 감정 데이터 가져오기
+  // useEffect(() => {
+  //   console.log(currentMonth);
+  //   if (token && currentMonth) {
+  //     fetchEmotions(currentMonth, token);
+  //   }
+  // }, [fetchEmotions, token, currentMonth]);
 
   const tileContent = ({ date, view }: TileContentProps): ReactElement | null => {
     if (view !== 'month') return null;
@@ -138,7 +138,7 @@ const Page = () => {
             defaultActiveStartDate={new Date()}
             tileContent={tileContent}
             tileClassName={tileClassName}
-            onActiveStartDateChange={handleMonthChange}
+            // onActiveStartDateChange={handleMonthChange}
             onClickDay={(value: Date) => {
               const selectedDate = formatDate(value); // YYYY-MM-DD 형식
               const today = new Date();
