@@ -1,25 +1,26 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import axios from 'axios';
+import qs from 'qs';
 
 type SignUpPayload = {
-  id: string;
+  login_id: string;
   password: string;
   nickname: string;
 };
 
 type SignInPayload = {
-  id: string;
+  username: string;
   password: string;
 };
 
 type User = {
-  userId: string;
+  id: string;
+  login_id: string;
   nickname: string;
-  gender: 'male' | 'female';
-  birthday: string;
-  character: string;
   coin: number;
-  isFirstLogin: boolean;
+  equipped_accessory_image_url: string | null;
+  equipped_background_image_url: string | null;
 };
 
 type AuthState = {
@@ -34,122 +35,170 @@ type AuthState = {
   user: User | null;
   userError: string | null;
 
-  accessToken: string | null;
-  refreshToken: string | null;
+  access_token: string | null;
+  refresh_token: string | null;
+
+  equipped_accessory_image_url: string | null;
+  equipped_background_image_url: string | null;
+
+  isFirstLogin: boolean;
 
   signUp: (data: SignUpPayload) => Promise<void>;
-  signIn: (data: SignInPayload) => Promise<void>;
+  signIn: (data: SignInPayload) => Promise<boolean>;
   fetchUser: () => Promise<void>;
   reset: () => void;
 };
 
-export const useAuthStore = create<AuthState>((set, get) => ({
-  isLoading: false,
-
-  signUpError: null,
-  signUpSuccess: false,
-
-  signInError: null,
-  signInSuccess: false,
-
-  user: null,
-  userError: null,
-
-  accessToken: null,
-  refreshToken: null,
-
-  signUp: async (data) => {
-    set({ isLoading: true, signUpError: null, signUpSuccess: false });
-    try {
-      const res = await axios.post('/api/signup', data); // 주소 수정
-
-      console.log('회원가입 성공', res);
-
-      set({ signUpSuccess: true });
-    } catch (err: unknown) {
-      let errorMessage = '회원가입 실패';
-
-      if (axios.isAxiosError(err)) {
-        errorMessage = err.response?.data?.message || err.message;
-      }
-
-      set({ signUpError: errorMessage, signUpSuccess: false });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-  signIn: async (data) => {
-    set({ isLoading: true, signInError: null, signInSuccess: false });
-
-    try {
-      const res = await axios.post('/api/signin', data); // 주소 수정
-      const { accessToken, refreshToken } = res.data;
-
-      set({
-        signInSuccess: true,
-        accessToken,
-        refreshToken,
-      });
-
-      await get().fetchUser();
-    } catch (err: unknown) {
-      let errorMessage = '로그인 실패';
-
-      if (axios.isAxiosError(err)) {
-        errorMessage = err.response?.data?.message || err.message;
-      }
-
-      set({
-        signInError: errorMessage,
-        signInSuccess: false,
-        accessToken: null,
-        refreshToken: null,
-      });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-  fetchUser: async () => {
-    set({ isLoading: true, userError: null });
-
-    try {
-      const token = get().accessToken; // 토큰 가져옴
-      if (!token) throw new Error('토큰이 없습니다.');
-
-      const res = await axios.get('/api/user', {
-        // 주소 수정
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      set({ user: res.data });
-    } catch (err: unknown) {
-      let errorMessage = '유저 정보 조회 실패';
-
-      if (axios.isAxiosError(err)) {
-        errorMessage = err.response?.data?.message || err.message;
-      }
-
-      set({ userError: errorMessage, user: null });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-  reset: () => {
-    set({
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set, get) => ({
       isLoading: false,
+
       signUpError: null,
       signUpSuccess: false,
+
       signInError: null,
       signInSuccess: false,
+
       user: null,
       userError: null,
-      accessToken: null,
-      refreshToken: null,
-    });
-  },
-}));
+
+      access_token: null,
+      refresh_token: null,
+
+      equipped_accessory_image_url: null,
+      equipped_background_image_url: null,
+
+      isFirstLogin: false,
+
+      signUp: async (data) => {
+        set({ isLoading: true, signUpError: null, signUpSuccess: false });
+        try {
+          const res = await axios.post(
+            'http://sentiment-server.duckdns.org/api/v1/users/signup',
+            data
+          );
+          console.log('회원가입 성공', res);
+          set({ signUpSuccess: true });
+        } catch (err: unknown) {
+          let errorMessage = '회원가입 실패';
+          if (axios.isAxiosError(err)) {
+            errorMessage = err.response?.data?.message || err.message;
+          }
+          set({ signUpError: errorMessage, signUpSuccess: false });
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      signIn: async (data) => {
+        set({ isLoading: true, signInError: null, signInSuccess: false });
+
+        try {
+          const res = await axios.post(
+            'http://sentiment-server.duckdns.org/api/v1/users/login',
+            qs.stringify(data),
+            {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+            }
+          );
+
+          const {
+            access_token,
+            refresh_token,
+            equipped_accessory_image_url,
+            equipped_background_image_url,
+          } = res.data;
+
+          set({
+            signInSuccess: true,
+            access_token,
+            refresh_token,
+            equipped_accessory_image_url,
+            equipped_background_image_url,
+          });
+
+          const hasLoggedInBefore = get().isFirstLogin;
+          if (!hasLoggedInBefore) {
+            set({ isFirstLogin: true });
+          } else {
+            set({ isFirstLogin: false });
+          }
+
+          await get().fetchUser();
+
+          return true; // 성공
+        } catch (err: unknown) {
+          let errorMessage = '로그인 실패';
+          if (axios.isAxiosError(err)) {
+            errorMessage = err.response?.data?.message || err.message;
+          }
+          set({
+            signInError: errorMessage,
+            signInSuccess: false,
+            access_token: null,
+            refresh_token: null,
+          });
+
+          return false; // 실패
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      fetchUser: async () => {
+        set({ isLoading: true, userError: null });
+
+        try {
+          const token = get().access_token;
+          if (!token) throw new Error('토큰이 없습니다.');
+
+          const res = await axios.get('http://sentiment-server.duckdns.org/api/v1/users/me', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          set({ user: { ...res.data } });
+          console.log('after set user:', get().user);
+        } catch (err: unknown) {
+          let errorMessage = '유저 정보 조회 실패';
+          if (axios.isAxiosError(err)) {
+            errorMessage = err.response?.data?.message || err.message;
+          }
+          set({ userError: errorMessage, user: null });
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      reset: () => {
+        set({
+          isLoading: false,
+          signUpError: null,
+          signUpSuccess: false,
+          signInError: null,
+          signInSuccess: false,
+          user: null,
+          userError: null,
+          access_token: null,
+          refresh_token: null,
+        });
+
+        sessionStorage.removeItem('auth-storage'); // 직접 세션스토리지 초기화
+      },
+    }),
+    {
+      name: 'auth-storage',
+      storage: createJSONStorage(() => sessionStorage),
+      partialize: (state) => ({
+        access_token: state.access_token,
+        refresh_token: state.refresh_token,
+        // 저장하고 싶은 값만 명시적으로
+        user: state.user,
+      }),
+    }
+  )
+);
