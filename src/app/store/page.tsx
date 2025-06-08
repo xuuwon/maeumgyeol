@@ -1,102 +1,42 @@
 'use client';
 
-// import { useItemStore } from '@/stores/storeStore';
+import { useItemStore } from '@/stores/storeStore';
 import clsx from 'clsx';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Page = () => {
   const [selectedCategory, setSelectedCategory] = useState<'배경' | '액세서리'>('배경');
 
-  // const { ownedItems } = useItemStore();
+  const categoryMap = {
+    배경: 'background',
+    액세서리: 'accessory',
+  } as const;
 
-  // const [userData, setUserData] = useState({
-  //   userId: 'user1234',
-  //   nickname: '감자몽러버',
-  //   gender: 'female',
-  //   birthday: '2000-05-01',
-  //   character: '/images/characters/basic_character.png',
-  //   background: '/images/background/store_cherryBlossom.png',
-  //   coin: 1500,
-  // });
+  const categoryKey = categoryMap[selectedCategory];
 
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      name: '수박바',
-      category: '액세서리',
-      price: 200,
-      image: '/images/items/watermelon_item.png',
-      appliedImage: '/images/characters/watermelon_character.png',
-      description: '여름엔 시원한 수박바!',
-      isOwned: true,
-      isEquipped: false,
-    },
-    {
-      id: 2,
-      name: '랜덤 박스',
-      category: '액세서리',
-      price: 500,
-      image: '/images/items/sweetpotato_item.png',
-      appliedImage: '/images/characters/sweetpotato_character.png',
-      description: '감자몽이 어떻게 바뀔까요?',
-      isOwned: false,
-      isEquipped: false,
-    },
-    {
-      id: 3,
-      name: '선글라스',
-      category: '액세서리',
-      price: 200,
-      image: '/images/items/sunglasses_item.png',
-      appliedImage: '/images/characters/sunglasses_character.png',
-      description: '햇빛이 쨍쨍할 땐 선글라스 필수!',
-      isOwned: true,
-      isEquipped: true, // 현재 장착 중
-    },
-    {
-      id: 8,
-      name: '벚꽃 배경',
-      category: '배경',
-      price: 500,
-      image: '/images/background/cherry-blossom.jpg',
-      appliedImage: '/images/background/store_cherryBlossom.png',
-      description: '벚꽃 흩날리는 언덕에서 휴식을 취해봐요!',
-      isOwned: true,
-      isEquipped: true,
-    },
-    {
-      id: 9,
-      name: '해변 배경',
-      category: '배경',
-      price: 500,
-      image: '/images/background/beach.jpg',
-      appliedImage: '/images/background/store_beach.png',
-      description: '시원한 해변에서 물놀이 한 번 어때요?',
-      isOwned: false,
-      isEquipped: false,
-    },
-  ]);
+  const { ownedItems, setItems, equipItem, unequipItem } = useItemStore();
 
-  const filteredItems = items.filter((item) => item.category === selectedCategory && item.isOwned);
+  useEffect(() => {
+    setItems(categoryKey); // zustand에서 아이템 가져오기
+  }, [categoryKey, setItems]);
+
+  const filteredItems = ownedItems.filter((item) => item.category === categoryKey);
+
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
 
-  const selectedItem = items.find((item) => item.id === selectedItemId);
+  const selectedItem = filteredItems.find((item) => item.id === selectedItemId);
 
-  const handleEquip = () => {
+  const handleEquip = async () => {
     if (!selectedItem) return;
+    await equipItem(selectedItem.id);
+    await setItems(categoryKey); // 서버에서 다시 받아와 상태 완전 초기화
+  };
 
-    // 적용 API 호출
-
-    setItems((prev) =>
-      prev.map((item) => {
-        if (item.category !== selectedItem.category) return item;
-        return {
-          ...item,
-          isEquipped: item.id === selectedItem.id,
-        };
-      })
-    );
+  const handleUnequip = async () => {
+    if (!selectedItem) return;
+    await unequipItem(selectedItem.id);
+    await setItems(categoryKey); // 서버에서 다시 받아와 상태 완전 초기화
   };
 
   return (
@@ -119,8 +59,7 @@ const Page = () => {
 
       {/* 아이템 리스트 */}
       <div className="relative w-full mt-auto h-full mb-[70px] bg-content-yellow overflow-y-scroll">
-        {/* 적용 버튼 */}
-        {selectedItem && !selectedItem.isEquipped && (
+        {/* {selectedItem && !selectedItem.equipped && (
           <button
             className="absolute px-4 py-2 mt-2 text-sm transform -translate-x-1/2 rounded-full shadow-md bottom-5 left-1/2 bg-main-yellow"
             onClick={handleEquip}
@@ -128,6 +67,14 @@ const Page = () => {
             적용하기
           </button>
         )}
+        {selectedItem && selectedItem.equipped && (
+          <button
+            className="absolute px-4 py-2 mt-2 text-sm transform -translate-x-1/2 rounded-full shadow-md bottom-5 left-1/2 bg-main-yellow"
+            onClick={handleUnequip}
+          >
+            해제하기
+          </button>
+        )} */}
         <div className="grid w-full grid-cols-2 gap-4 px-6 py-6">
           {filteredItems.map((item) => (
             <div
@@ -138,13 +85,13 @@ const Page = () => {
               )}
               onClick={() => setSelectedItemId(item.id)}
             >
-              {item.isEquipped && (
+              {item.equipped && (
                 <p className="absolute px-2 py-1 text-sm -left-2 -top-2 bg-main-yellow rounded-xl">
                   적용 됨
                 </p>
               )}
               <Image
-                src={item.image}
+                src={item.item_image_url}
                 alt={item.name}
                 width={80}
                 height={80}
@@ -154,6 +101,23 @@ const Page = () => {
                 <p className="font-semibold text-[#ffad20]">{item.name}</p>
                 <p className="text-sm text-center text-gray-500">{item.description}</p>
               </div>
+
+              {/* 적용/해제 버튼 - 선택된 아이템이면 보여줌 */}
+              {item.id === selectedItemId && (
+                <button
+                  className="px-4 py-1 mt-4 text-sm rounded-full shadow bg-main-yellow"
+                  onClick={(e) => {
+                    e.stopPropagation(); // 카드 클릭 이벤트 방지
+                    if (item.equipped) {
+                      handleUnequip();
+                    } else {
+                      handleEquip();
+                    }
+                  }}
+                >
+                  {item.equipped ? '해제하기' : '적용하기'}
+                </button>
+              )}
             </div>
           ))}
         </div>
