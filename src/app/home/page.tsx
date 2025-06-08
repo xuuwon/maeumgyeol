@@ -5,8 +5,13 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { useAuthStore } from '@/stores/authStore';
 
 const Page = () => {
+  const user = useAuthStore((state) => state.user);
+  const equippedAccessory = user?.equipped_accessory_image_url;
+  const equippedBackground = user?.equipped_background_image_url;
+
   const now = new Date();
 
   const year = now.getFullYear();
@@ -26,9 +31,17 @@ const Page = () => {
   return (
     <div
       className={clsx(
-        'h-screen bg-[url(/images/background/cherryBlossom_mobile.png)] sm:bg-[url(/images/background/cherryBlossom_tablet.png)] bg-center bg-no-repeat bg-cover px-4 sm:px-6 md:px-8',
-        'flex flex-col items-center justify-around py-9'
+        'h-screen px-4 sm:px-6 md:px-8 flex flex-col items-center justify-around py-9',
+        !equippedBackground && 'bg-center bg-no-repeat bg-cover'
       )}
+      style={
+        equippedBackground
+          ? {
+              backgroundImage: `url(${equippedBackground})`,
+              backgroundSize: 'cover',
+            }
+          : undefined
+      }
     >
       <div className="flex flex-col items-center gap-4">
         {/* 텍스트 */}
@@ -49,7 +62,7 @@ const Page = () => {
           <div className="absolute w-4 h-4 rotate-45 bg-main-yellow -bottom-2 left-16"></div>
         </div>
         <Image
-          src="/images/characters/basic_character.png" // 예시
+          src={equippedAccessory ? equippedAccessory : '/images/characters/basic_character.png'} // 예시
           alt="메인 캐릭터"
           width={230}
           height={230}
