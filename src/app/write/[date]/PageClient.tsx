@@ -98,6 +98,12 @@ const PageClient = ({ date }: { date: string }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (success && diary?.date) {
+      router.push(`/write/detail/${diary.date}`);
+    }
+  }, [success, diary, router]);
+
   // 저장 처리 함수
   const handleSubmit = async () => {
     const content = editor?.getHTML() ?? '';
@@ -119,10 +125,6 @@ const PageClient = ({ date }: { date: string }) => {
     });
 
     setShowSaveModal(false);
-
-    if (success && diary?.date) {
-      router.push(`/write/detail/${diary.date}`);
-    }
   };
 
   return (
