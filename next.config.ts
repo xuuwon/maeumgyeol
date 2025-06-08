@@ -4,9 +4,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
+        protocol: 'http',
         hostname: 'sentiment-server.duckdns.org',
-        port: '',
         pathname: '/**',
       },
     ],
