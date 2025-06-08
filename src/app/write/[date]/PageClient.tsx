@@ -15,6 +15,7 @@ import { ToolBar } from '@/components/toolBar/ToolBar';
 import LayerPopup from '@/components/layerPopup/LayerPopup';
 import { customHighlight } from '@/extension/customHighlight';
 import { useDiaryStore } from '@/stores/diaryStore';
+import Analyzing from '@/app/analyzing/page';
 
 const PageClient = ({ date }: { date: string }) => {
   const today = new Date(date);
@@ -98,11 +99,11 @@ const PageClient = ({ date }: { date: string }) => {
     };
   }, []);
 
-  useEffect(() => {
+  const checkSuccessAndNavigate = () => {
     if (success && diary?.date) {
       router.push(`/write/detail/${diary.date}`);
     }
-  }, [success, diary, router]);
+  };
 
   // 저장 처리 함수
   const handleSubmit = async () => {
@@ -115,6 +116,8 @@ const PageClient = ({ date }: { date: string }) => {
       return;
     }
 
+    setShowSaveModal(false);
+
     // 실제 저장 처리
     await writeDiary({
       diary_date: formattedDate,
@@ -124,7 +127,7 @@ const PageClient = ({ date }: { date: string }) => {
       images_url: imageFiles,
     });
 
-    setShowSaveModal(false);
+    checkSuccessAndNavigate();
   };
 
   return (
@@ -163,11 +166,7 @@ const PageClient = ({ date }: { date: string }) => {
         />
       )}
 
-      {isLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-80">
-          <p className="text-xl font-semibold">일기 분석 중입니다...</p>
-        </div>
-      )}
+      {isLoading && <Analyzing />}
 
       {error && (
         <LayerPopup
