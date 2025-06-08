@@ -24,7 +24,7 @@ export default function Home() {
       </div>
 
       {/* 서비스 소개 */}
-      <div className="max-w-full w-72 sm:w-full">
+      <div className="max-w-full w-80 sm:w-full">
         <p className="text-center">
           마음결은 당신의 감정을 이해하고 <br />
           하루를 편안히 마무리하게 돕는 서비스입니다.💝
