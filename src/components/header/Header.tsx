@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuthStore } from '@/stores/authStore';
 import { ChevronLeft, CircleDollarSign, ShoppingCart, Store } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -9,6 +10,7 @@ const Header = ({ type = 'main' }: { type?: string }) => {
   // type: 스토어 (이전, 코인, 보관함)
   // type: 보관함 (이전, 코인, 스토어)
   const router = useRouter();
+  const { user } = useAuthStore();
 
   const iconStyle = 'hover:text-[#ffad20] cursor-pointer';
 
@@ -35,7 +37,7 @@ const Header = ({ type = 'main' }: { type?: string }) => {
         <div className="flex gap-1">
           {/* 코인 */}
           <CircleDollarSign className="text-[#ffad20]" />
-          <p>52351</p>
+          <p>{user?.coin}</p>
         </div>
       </div>
       <div>
