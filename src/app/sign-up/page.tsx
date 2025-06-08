@@ -1,19 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SignupSchema, signupSchema } from './signupSchema';
 import Button from '@/components/button/Button';
 import LayerPopup from '@/components/layerPopup/LayerPopup';
 import { useRouter } from 'next/navigation';
-// import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@/stores/authStore';
 
 const Page = () => {
-  // const signUp = useAuthStore((state) => state.signUp); // zustand signUp 함수 가져오기
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
-  const router = useRouter();
+  const { signUp, signUpError, signUpSuccess } = useAuthStore();
 
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -23,22 +22,22 @@ const Page = () => {
     mode: 'onBlur', // focus를 벗어날 때 유효성 검사 진행
   });
 
-  const onSubmit = (data: SignupSchema) => {
-    console.log('회원가입 데이터:', data);
-    setIsSuccess(true);
-  };
+  const onSubmit = async (data: SignupSchema) => {
+    try {
+      await signUp({
+        login_id: data.id,
+        password: data.password,
+        nickname: data.nickname,
+      });
 
-  // const onSubmit = async (data: SignupSchema) => {
-  //   try {
-  //     await signUp({
-  //       id: data.id,
-  //       password: data.password,
-  //       nickname: data.nickname,
-  //     });
-  //   } catch (error) {
-  //     console.error('회원가입 중 오류 발생:', error);
-  //   }
-  // };
+      if (signUpSuccess) {
+        console.log('회원가입 성공. 로그인 페이지로 이동');
+        router.push('/sign-in');
+      }
+    } catch (error) {
+      console.error('회원가입 중 오류 발생:', error);
+    }
+  };
 
   const inputStyle =
     'h-9 border rounded-md w-80 bg-bg-yellow border-main-yellow focus:outline-none pl-2 text-[#909090]';
@@ -47,7 +46,7 @@ const Page = () => {
 
   return (
     <>
-      {isSuccess && (
+      {signUpSuccess && (
         <LayerPopup
           confirmType={true}
           mainText="회원가입이 완료되었습니다."
@@ -103,7 +102,12 @@ const Page = () => {
             )}
           </div>
 
-          <div className="flex justify-center w-full mx-auto">
+          <div className="flex flex-col items-center w-full gap-3 mx-auto">
+            {signUpError && (
+              <p className="text-sm text-red-400">
+                회원가입에 실패하였습니다. <br /> 잠시 후 다시 시도해 주세요.
+              </p>
+            )}
             <Button type="yellow" text="회원가입" func={handleSubmit(onSubmit)} />
           </div>
         </form>
