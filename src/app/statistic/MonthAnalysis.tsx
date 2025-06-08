@@ -12,47 +12,11 @@ import {
   RectangleProps,
   LabelList,
 } from 'recharts';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import clsx from 'clsx';
-// import { useEmotionReportStore } from '@/stores/emotionReportStore';
+import { EmotionType, useEmotionReportStore } from '@/stores/emotionReportStore';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7f50', '#a29bfe'];
-
-type EmotionType = '행복' | '슬픔' | '불안' | '중립' | '분노';
-
-const emotionTimeline: Record<string, EmotionType | ''> = {
-  '2025-05-01': '행복',
-  '2025-05-02': '행복',
-  '2025-05-03': '중립',
-  '2025-05-04': '',
-  '2025-05-05': '행복',
-  '2025-05-06': '중립',
-  '2025-05-07': '슬픔',
-  '2025-05-08': '',
-  '2025-05-09': '불안',
-  '2025-05-10': '분노',
-  '2025-05-11': '중립',
-  '2025-05-12': '',
-  '2025-05-13': '중립',
-  '2025-05-14': '중립',
-  '2025-05-15': '',
-  '2025-05-16': '슬픔',
-  '2025-05-17': '중립',
-  '2025-05-18': '',
-  '2025-05-19': '중립',
-  '2025-05-20': '불안',
-  '2025-05-21': '',
-  '2025-05-22': '중립',
-  '2025-05-23': '중립',
-  '2025-05-24': '',
-  '2025-05-25': '불안',
-  '2025-05-26': '슬픔',
-  '2025-05-27': '',
-  '2025-05-28': '중립',
-  '2025-05-29': '행복',
-  '2025-05-30': '',
-  '2025-05-31': '중립',
-};
 
 function getWeekLabel(dateStr: string): string | null {
   const date = new Date(dateStr);
@@ -89,23 +53,35 @@ export default function MonthAnalysis({
   isMonth: boolean;
   setIsMonth: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  // const { monthlyEmotionTimeline, fetchMonthlyTimeline } = useEmotionReportStore();
+  const { monthlyEmotionTimeline, fetchMonthlyTimeline, monthlyAdvice } = useEmotionReportStore();
 
-  // useEffect(() => {
-  //   fetchMonthlyTimeline();
-  // }, []);
+  useEffect(() => {
+    fetchMonthlyTimeline();
+  }, []);
+
+  console.log(monthlyEmotionTimeline);
 
   const { weekHappinessData, emotionRatioData } = useMemo(() => {
     const weekStats: Record<string, { total: number; happy: number }> = {};
     const emotionCounts: Record<EmotionType, number> = {
+      평온: 0,
       행복: 0,
       슬픔: 0,
       불안: 0,
-      중립: 0,
       분노: 0,
+      피곤: 0,
+      외로움: 0,
+      지루함: 0,
+      후회: 0,
+      희망: 0,
+      질투: 0,
+      혼란: 0,
+      당황: 0,
     };
 
-    const entries = Object.entries(emotionTimeline).filter(([date]) => date.startsWith('2025-05'));
+    const entries = Object.entries(monthlyEmotionTimeline).filter(([date]) =>
+      date.startsWith('2025-05')
+    );
 
     // 빈값 없는 항목만 필터링
     const filteredEntries = entries.filter(([, emotion]) => emotion);
@@ -141,12 +117,13 @@ export default function MonthAnalysis({
 
     const totalDays = filteredEntries.length; // 빈값 제외한 날짜 수
 
-    const emotionRatioData: EmotionRatioData[] = Object.entries(emotionCounts).map(
-      ([emotion, count]) => ({
+    // 감정 비율 데이터 생성
+    const emotionRatioData: EmotionRatioData[] = Object.entries(emotionCounts)
+      .map(([emotion, count]) => ({
         name: emotion as EmotionType,
-        value: Number(((count / totalDays) * 100).toFixed(1)),
-      })
-    );
+        value: totalDays ? Number(((count / totalDays) * 100).toFixed(1)) : 0,
+      }))
+      .filter((data) => data.value > 0); // 0% 데이터 제외
 
     return { weekHappinessData, emotionRatioData };
   }, []);
@@ -188,44 +165,58 @@ export default function MonthAnalysis({
       <div className="flex flex-col w-full h-auto gap-4 p-4 border border-main-yellow rounded-xl">
         <h2 className="text-lg font-bold">주간 행복도 분석</h2>
         <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={weekHappinessData}>
-            <XAxis dataKey="week" />
-            <Bar dataKey="happinessRate" barSize={30} shape={<CustomBar />} fill="#FFD939">
-              <LabelList
-                dataKey="happinessRate"
-                position="top"
-                formatter={(value: number) => `${value}%`}
-                fill="#ffad20"
-              />
-            </Bar>
-          </BarChart>
+          {weekHappinessData.length === 0 ? (
+            <div className="flex items-center justify-center w-full h-full text-xl text-gray-500">
+              데이터가 없습니다.
+            </div>
+          ) : (
+            <BarChart data={weekHappinessData}>
+              <XAxis dataKey="week" />
+              <Bar dataKey="happinessRate" barSize={30} shape={<CustomBar />} fill="#FFD939">
+                <LabelList
+                  dataKey="happinessRate"
+                  position="top"
+                  formatter={(value: number) => `${value}%`}
+                  fill="#ffad20"
+                />
+              </Bar>
+            </BarChart>
+          )}
         </ResponsiveContainer>
       </div>
 
       <div className="flex flex-col w-full h-auto gap-4 p-4 border border-main-yellow rounded-xl">
         <h2 className="mb-4 text-lg font-bold">월 전체 감정 비율</h2>
         <ResponsiveContainer width="100%" height={320}>
-          <PieChart>
-            <Pie
-              data={emotionRatioData}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={90}
-              label={({ name, value }: { name: EmotionType; value: number }) => `${name} ${value}%`}
-            >
-              {emotionRatioData.map((entry, index) => (
-                <Cell key={entry.name as string} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Legend />
-          </PieChart>
+          {emotionRatioData.length === 0 ? (
+            <div className="flex items-center justify-center w-full h-full text-xl text-gray-500">
+              데이터가 없습니다.
+            </div>
+          ) : (
+            <PieChart>
+              <Pie
+                data={emotionRatioData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={90}
+                label={({ name, value }: { name: EmotionType; value: number }) =>
+                  `${name} ${value}%`
+                }
+              >
+                {emotionRatioData.map((entry, index) => (
+                  <Cell key={entry.name as string} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Legend />
+            </PieChart>
+          )}
         </ResponsiveContainer>
       </div>
 
       <div className="flex flex-col items-center w-full h-auto gap-4 p-4 mb-10 border bg-bg-yellow border-main-yellow rounded-xl">
-        <p>이번 달도 고생 많으셨습니다! 다음 달도 힘내 보아요! 😋</p>
+        <p>{monthlyAdvice}</p>
       </div>
     </div>
   );

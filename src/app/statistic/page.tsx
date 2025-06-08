@@ -15,7 +15,7 @@ type EmotionRatioData = {
 };
 
 export default function Page() {
-  const { weeklyEmotionTimeline, fetchWeeklyTimeline } = useEmotionReportStore();
+  const { weeklyEmotionTimeline, fetchWeeklyTimeline, weeklyAdvice } = useEmotionReportStore();
 
   useEffect(() => {
     fetchWeeklyTimeline();
@@ -125,7 +125,7 @@ export default function Page() {
           </div>
 
           {/* 주 전체 감정 비율 (원형 그래프) */}
-          <div className="flex flex-col w-full h-auto gap-4 p-4 mb-10 border border-main-yellow rounded-xl">
+          <div className="flex flex-col w-full h-auto gap-4 p-4 border border-main-yellow rounded-xl">
             <h2 className="mb-4 text-lg font-bold">주 전체 감정 비율</h2>
             <ResponsiveContainer width="100%" height={320}>
               {emotionRatioData.length === 0 ? (
@@ -153,6 +153,10 @@ export default function Page() {
                 </PieChart>
               )}
             </ResponsiveContainer>
+          </div>
+
+          <div className="flex flex-col items-center w-full h-auto gap-4 p-4 mb-10 border bg-bg-yellow border-main-yellow rounded-xl">
+            <p>{weeklyAdvice}</p>
           </div>
         </div>
       )}

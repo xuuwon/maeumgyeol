@@ -19,7 +19,9 @@ export type EmotionType =
 
 interface EmotionState {
   weeklyEmotionTimeline: Record<string, EmotionType | ''>;
+  weeklyAdvice: string;
   monthlyEmotionTimeline: Record<string, EmotionType | ''>;
+  monthlyAdvice: string;
   fetchWeeklyTimeline: () => Promise<void>;
   fetchMonthlyTimeline: () => Promise<void>;
   setWeeklyTimeline: (data: Record<string, EmotionType | ''>) => void;
@@ -69,9 +71,32 @@ function getLastWeekRange(): { start: string; end: string } {
   };
 }
 
+function getLastMonthRange(): { start: string; end: string } {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+
+  const start = new Date(year, month - 1, 1);
+  const end = new Date(year, month, 0);
+
+  const formatSafe = (date: Date) => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  };
+
+  return {
+    start: formatSafe(start),
+    end: formatSafe(end),
+  };
+}
+
 export const useEmotionReportStore = create<EmotionState>((set) => ({
   weeklyEmotionTimeline: {},
   monthlyEmotionTimeline: {},
+  weeklyAdvice: '',
+  monthlyAdvice: '',
 
   setWeeklyTimeline: (data) => set({ weeklyEmotionTimeline: data }),
   setMonthlyTimeline: (data) => set({ monthlyEmotionTimeline: data }),
@@ -79,13 +104,13 @@ export const useEmotionReportStore = create<EmotionState>((set) => ({
   fetchWeeklyTimeline: async () => {
     try {
       const { start, end } = getLastWeekRange();
-      console.log(start, end);
+      // console.log(start, end);
       const res = await api.post('/analysis/weekly-report', {
         start_date: start,
         end_date: end,
       });
 
-      set({ weeklyEmotionTimeline: res.data.emotion_timeline });
+      set({ weeklyEmotionTimeline: res.data.emotion_timeline, weeklyAdvice: res.data.advice });
     } catch (error) {
       console.error(error);
     }
@@ -93,13 +118,14 @@ export const useEmotionReportStore = create<EmotionState>((set) => ({
 
   fetchMonthlyTimeline: async () => {
     try {
-      const res = await fetch('https://your-api.com/emotions/monthly');
+      const { start, end } = getLastMonthRange();
+      console.log(start, end);
+      const res = await api.post('/analysis/monthly-report', {
+        start_date: start,
+        end_date: end,
+      });
 
-      if (!res.ok) throw new Error('월간 데이터 받아오기 실패');
-
-      const data: Record<string, EmotionType | ''> = await res.json();
-
-      set({ monthlyEmotionTimeline: data });
+      set({ monthlyEmotionTimeline: res.data.emotion_timeline, monthlyAdvice: res.data.advice });
     } catch (error) {
       console.error(error);
     }
