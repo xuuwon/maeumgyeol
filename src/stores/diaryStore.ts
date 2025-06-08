@@ -1,31 +1,64 @@
 import { create } from 'zustand';
+import { useAuthStore } from './authStore';
+import axios from 'axios';
 
 type DiaryState = {
   isLoading: boolean;
   error: string | null;
   success: boolean;
-  writeDiary: (
-    data: {
-      date: string;
-      weather: string;
-      title: string;
-      content: string;
-      images: File[];
-    },
-    token: string
-  ) => Promise<void>;
-  diary: diaryDetail | null;
+  writeDiary: (data: {
+    diary_date: string;
+    weather: string;
+    title: string;
+    content: string;
+    images_url: File[];
+  }) => Promise<void>;
+  fetchDiary: (id: string) => Promise<void>;
+  diary: DiaryDetail | null;
 };
 
-type diaryDetail = {
-  date: string;
-  weather: string;
-  title: string;
-  content: string;
-  images: File[];
-  emotion: string; // 변경 가능
-  comment: string;
+type DiaryDetail = {
+  id: number;
+  date: string; // 예: "2025-06-08"
+  title: string; // 예: "오늘은"
+  weather: '맑음' | '비' | '눈' | '흐림'; // 예: "맑음"
+  content: string; // HTML 포함 문자열
+
+  image_urls: string[]; // 이미지 URL 배열
+
+  analyzed_emotion: {
+    name: string; // 예: "HAPPY"
+    korean_name:
+      | '평온'
+      | '행복'
+      | '슬픔'
+      | '불안'
+      | '분노'
+      | '피곤'
+      | '외로움'
+      | '지루함'
+      | '후회'
+      | '희망'
+      | '질투'
+      | '혼란'
+      | '당황'; // 예: "행복"
+    emoji: string; // 예: "😊"
+    message: string; // 예: "오늘은 행복한 하루네요! 기분 좋은 일이 가득하길 바라요."
+  };
 };
+
+const api = axios.create({
+  baseURL: 'http://sentiment-server.duckdns.org/api/v1',
+});
+
+api.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().access_token;
+  console.log(token);
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export const useDiaryStore = create<DiaryState>((set) => ({
   isLoading: false,
@@ -33,68 +66,68 @@ export const useDiaryStore = create<DiaryState>((set) => ({
   success: false,
   diary: null,
 
-  writeDiary: async (data, token) => {
+  writeDiary: async (data) => {
     set({ isLoading: true, error: null, success: false });
 
     try {
       const formData = new FormData();
-      formData.append('date', data.date);
+      formData.append('diary_date', data.diary_date);
       formData.append('weather', data.weather);
       formData.append('title', data.title);
       formData.append('content', data.content);
 
-      data.images.forEach((file) => {
-        formData.append('images', file);
-      });
-
-      // 1. 일기 저장 API 호출
-      const res = await fetch('/api/diary', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // Content-Type 헤더는 FormData를 보낼 때 자동 설정됨
-        },
-        body: formData,
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || '작성 실패');
+      if (data.images_url.length !== 0) {
+        data.images_url.forEach((file) => {
+          formData.append('images_files', file);
+        });
       }
 
-      // 2. 응답에서 id 추출
-      const resData = await res.json();
-      const diaryId = resData.id; // 속성값 바뀔 수 있음
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+
+      // 1. 일기 저장
+      const res = await api.post('/diaries/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // 이건 사실 안 넣어도 axios가 자동 세팅함
+        },
+      });
+      const diaryId = res.data.id;
       if (!diaryId) throw new Error('일기 ID를 받지 못했습니다.');
 
-      // 3. 분석 API 호출
-      const analysisRes = await fetch(`/api/diary/${diaryId}/analysis`, {
-        // 주소 수정
-        // body에 담아서 보내는지? 아니면 쿼리스트링에 담아 보내는지
-        method: 'POST', // 메소드 수정
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          /* 분석 API가 필요한 데이터 있으면 여기에 */
-        }),
-      });
+      // 2. 분석 요청
+      await api.post(`/analysis/diary-mood/${diaryId}`);
 
-      if (!analysisRes.ok) {
-        const errorData = await analysisRes.json();
-        throw new Error(errorData.message || '분석 실패');
-      }
+      // 3. 상세 정보 조회
+      const detailRes = await api.get(`/diaries/${diaryId}`);
+      const detailData = detailRes.data;
 
-      // 분석 결과를 사용하고 싶으면 여기서 받기
-      const analysisData = await analysisRes.json();
-      console.log('분석 결과:', analysisData);
-
-      set({ isLoading: false, success: true, diary: analysisData });
+      console.log('분석 결과:', detailData);
+      set({ isLoading: false, success: true, diary: detailData });
     } catch (err: unknown) {
       let message = '알 수 없는 에러';
 
-      if (err instanceof Error) {
+      if (axios.isAxiosError(err)) {
+        message = err.response?.data?.message || err.message;
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
+
+      set({ isLoading: false, error: message, success: false });
+    }
+  },
+
+  fetchDiary: async (id) => {
+    set({ isLoading: true, error: null });
+    try {
+      const res = await api.get(`/diaries/${id}`);
+      set({ diary: res.data, isLoading: false });
+    } catch (err: unknown) {
+      let message = '알 수 없는 에러';
+
+      if (axios.isAxiosError(err)) {
+        message = err.response?.data?.message || err.message;
+      } else if (err instanceof Error) {
         message = err.message;
       }
 
