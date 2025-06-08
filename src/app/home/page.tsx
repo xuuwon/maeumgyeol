@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useAuthStore } from '@/stores/authStore';
+import { useMediaQuery } from 'react-responsive';
 
 const Page = () => {
   const user = useAuthStore((state) => state.user);
@@ -28,17 +29,46 @@ const Page = () => {
 
   const router = useRouter();
 
+  const isMobile = useMediaQuery({ maxWidth: 500 });
+  const isTablet = useMediaQuery({ minWidth: 501 });
+
+  // background 이미지 결정 로직
+  let bgUrl: string | undefined;
+
+  if (equippedBackground) {
+    if (equippedBackground.includes('cherryBlossom')) {
+      if (isTablet) {
+        bgUrl = '/images/background/cherryBlossom_tablet.png';
+      } else if (isMobile) {
+        bgUrl = '/images/background/cherryBlossom_mobile.png';
+      } else {
+        bgUrl = equippedBackground;
+      }
+    } else if (equippedBackground.includes('beach')) {
+      if (isTablet) {
+        bgUrl = '/images/background/beach_tablet.png';
+      } else if (isMobile) {
+        bgUrl = '/images/background/beach_mobile.png';
+      } else {
+        bgUrl = equippedBackground;
+      }
+    } else {
+      bgUrl = equippedBackground;
+    }
+  }
+
   return (
     <div
       className={clsx(
-        'h-screen px-4 sm:px-6 md:px-8 flex flex-col items-center justify-around py-9',
-        !equippedBackground && 'bg-center bg-no-repeat bg-cover'
+        'h-screen px-4 sm:px-6 md:px-8 flex flex-col items-center justify-around py-9'
       )}
       style={
-        equippedBackground
+        bgUrl
           ? {
-              backgroundImage: `url(${equippedBackground})`,
+              backgroundImage: `url(${bgUrl})`,
               backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'top center',
             }
           : undefined
       }
