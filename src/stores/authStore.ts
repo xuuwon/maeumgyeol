@@ -69,7 +69,7 @@ export const useAuthStore = create<AuthState>()(
       equipped_accessory_image_url: null,
       equipped_background_image_url: null,
 
-      isFirstLogin: false,
+      isFirstLogin: true,
 
       signUp: async (data) => {
         set({ isLoading: true, signUpError: null, signUpSuccess: false });
@@ -120,21 +120,24 @@ export const useAuthStore = create<AuthState>()(
             equipped_background_image_url,
           });
 
-          const hasLoggedInBefore = get().isFirstLogin;
+          await get().fetchUser();
+
+          // 세션스토리지를 이용한 first login 판단
+          const hasLoggedInBefore = sessionStorage.getItem('hasLoggedInBefore');
           if (!hasLoggedInBefore) {
             set({ isFirstLogin: true });
+            sessionStorage.setItem('hasLoggedInBefore', 'true');
           } else {
             set({ isFirstLogin: false });
           }
 
-          await get().fetchUser();
-
-          return true; // 성공
+          return true;
         } catch (err: unknown) {
           let errorMessage = '로그인 실패';
           if (axios.isAxiosError(err)) {
             errorMessage = err.response?.data?.message || err.message;
           }
+
           set({
             signInError: errorMessage,
             signInSuccess: false,
@@ -142,7 +145,7 @@ export const useAuthStore = create<AuthState>()(
             refresh_token: null,
           });
 
-          return false; // 실패
+          return false;
         } finally {
           set({ isLoading: false });
         }
