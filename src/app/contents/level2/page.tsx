@@ -1,12 +1,13 @@
 'use client';
 
+import React, { Suspense } from 'react';
 import Button from '@/components/button/Button';
 import { useContentStore } from '@/stores/contentStore';
 import { ChevronLeft } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React from 'react';
+import Analyzing from '@/app/analyzing/page';
 
-const Page = () => {
+function Content() {
   const searchParams = useSearchParams();
   const { saveContentBundle, isSaved } = useContentStore();
   const id = Number(searchParams.get('id'));
@@ -14,15 +15,8 @@ const Page = () => {
   const saved = isSaved[id] ?? false;
 
   const contentBundle = {
-    level: 2, // 현재 콘텐츠 레벨
-
-    level_1_content: {
-      level: 0,
-      name: '',
-      korean_name: '',
-      instruction: [],
-    },
-
+    level: 2,
+    level_1_content: { level: 0, name: '', korean_name: '', instruction: [] },
     level_2_content: {
       level: 2,
       name: 'CAUSE_ANALYSIS',
@@ -34,7 +28,6 @@ const Page = () => {
         '핵심 원인 2~3개로 요약하고, 내 관점에서 성찰한다.',
       ],
     },
-
     level_3_content: {
       level: 0,
       name: '',
@@ -46,20 +39,18 @@ const Page = () => {
     },
   };
 
-  const handleSave = () => {
-    saveContentBundle(contentBundle, Number(id));
-  };
-
   const router = useRouter();
+
+  const handleSave = () => {
+    saveContentBundle(contentBundle, id);
+  };
 
   return (
     <div className="flex flex-col h-screen gap-10 px-4 mx-auto sm:px-6 md:px-8">
       <ChevronLeft
         size={30}
         className="absolute cursor-pointer top-4 left-2 sm:left-3 md:left-4"
-        onClick={() => {
-          router.back();
-        }}
+        onClick={() => router.back()}
       />
       <div className="flex flex-col items-center justify-center gap-2 text-xl h-36 iphoneSE:mt-5">
         <p>마음 챙김 콘텐츠</p>
@@ -93,6 +84,12 @@ const Page = () => {
       )}
     </div>
   );
-};
+}
 
-export default Page;
+export default function Page() {
+  return (
+    <Suspense fallback={<Analyzing />}>
+      <Content />
+    </Suspense>
+  );
+}

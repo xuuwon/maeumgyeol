@@ -1,12 +1,13 @@
 'use client';
 
+import React, { Suspense } from 'react';
 import Button from '@/components/button/Button';
 import { useContentStore } from '@/stores/contentStore';
 import { ChevronLeft } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React from 'react';
+import Analyzing from '@/app/analyzing/page';
 
-const Page = () => {
+const Content = () => {
   const searchParams = useSearchParams();
   const { lowContents: data, saveContentBundle, isSaved } = useContentStore();
   const id = Number(searchParams.get('id'));
@@ -88,5 +89,11 @@ const Page = () => {
     </div>
   );
 };
+
+const Page = () => (
+  <Suspense fallback={<Analyzing />}>
+    <Content />
+  </Suspense>
+);
 
 export default Page;

@@ -1,16 +1,17 @@
 'use client';
 
+import React, { Suspense, useState } from 'react';
 import Button from '@/components/button/Button';
 import { useContentStore } from '@/stores/contentStore';
 import clsx from 'clsx';
 import { ChevronLeft } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useState } from 'react';
+import Analyzing from '@/app/analyzing/page';
 
-const Page = () => {
-  const [firstInput, setFirstInput] = useState<string>('');
-  const [secondInput, setSecondInput] = useState<string>('');
-  const [thirdInput, setThirdInput] = useState<string>('');
+function Content() {
+  const [firstInput, setFirstInput] = useState('');
+  const [secondInput, setSecondInput] = useState('');
+  const [thirdInput, setThirdInput] = useState('');
 
   const searchParams = useSearchParams();
   const { saveContentBundle, isSaved } = useContentStore();
@@ -18,24 +19,10 @@ const Page = () => {
 
   const saved = isSaved[id] ?? false;
 
-  // contentBundle 형태로 묶기
   const contentBundle = {
     level: 3,
-
-    level_1_content: {
-      level: 0,
-      name: '',
-      korean_name: '',
-      instruction: [],
-    },
-
-    level_2_content: {
-      level: 0,
-      name: '',
-      korean_name: '',
-      instruction: [],
-    },
-
+    level_1_content: { level: 0, name: '', korean_name: '', instruction: [] },
+    level_2_content: { level: 0, name: '', korean_name: '', instruction: [] },
     level_3_content: {
       level: 3,
       name: 'GRATITUDE_JOURNAL',
@@ -47,9 +34,11 @@ const Page = () => {
     },
   };
 
+  const router = useRouter();
+
   const handleSave = () => {
     console.log('저장할 콘텐츠:', contentBundle);
-    saveContentBundle(contentBundle, id); // 실제 저장 함수 호출
+    saveContentBundle(contentBundle, id);
     router.back();
   };
 
@@ -58,8 +47,6 @@ const Page = () => {
   const month = dateObj.getMonth() + 1;
   const day = dateObj.getDate();
   const formattedDate = `${year}년 ${month}월 ${day}일`;
-
-  const router = useRouter();
 
   const inputStyle =
     'w-full py-2 pl-3 border rounded-lg border-1 border-main-yellow bg-main-background focus:outline-none';
@@ -74,9 +61,7 @@ const Page = () => {
       <ChevronLeft
         size={30}
         className="absolute cursor-pointer top-4 left-2 sm:left-3 md:left-4"
-        onClick={() => {
-          router.back();
-        }}
+        onClick={() => router.back()}
       />
       <div className="flex flex-col items-center justify-center gap-2 text-xl h-36 iphoneSE:mt-5">
         <p>{formattedDate}</p>
@@ -143,7 +128,6 @@ const Page = () => {
             func={() => {
               if (!isSaveDisabled) {
                 handleSave();
-                router.back();
               }
             }}
           />
@@ -152,6 +136,12 @@ const Page = () => {
       )}
     </div>
   );
-};
+}
 
-export default Page;
+export default function Page() {
+  return (
+    <Suspense fallback={<Analyzing />}>
+      <Content />
+    </Suspense>
+  );
+}
