@@ -42,7 +42,6 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
     try {
       const res = await api.get(`/diaries/?year_and_month=${month}`);
 
-      // 만약 API가 { emotions: {...} } 형태가 아니라면 여기를 조정하세요.
       const data = res.data.emotions ?? res.data;
 
       set({ emotions: data });

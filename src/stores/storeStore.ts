@@ -102,8 +102,6 @@ export const useItemStore = create<ItemStore>((set, get) => ({
         ),
       });
 
-      // fetchUser 호출을 무조건 실행
-      console.log('fetchUser 호출 시작...');
       try {
         await useAuthStore.getState().fetchUser();
         console.log('fetchUser 호출 완료!');
