@@ -56,7 +56,7 @@ const Page = () => {
           }}
         />
       )}
-      <div className="flex flex-col items-center justify-around h-screen px-4 py-16 iphoneSE:py-10 sm:py-10 sm:px-6 md:px-8">
+      <div className="flex flex-col items-center justify-around h-screen px-4 py-16 iphoneSE:py-10 sm:py-6 sm:px-6 md:px-8">
         <p className="text-2xl">회원가입</p>
 
         <form
