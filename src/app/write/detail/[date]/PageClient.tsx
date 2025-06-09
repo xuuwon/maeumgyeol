@@ -1,12 +1,12 @@
 'use client';
 
 import Button from '@/components/button/Button';
+import { useContentStore } from '@/stores/contentStore';
 import { useDiaryStore } from '@/stores/diaryStore';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect } from 'react';
 
 const PageClient = ({ date }: { date: string }) => {
-  console.log(date);
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
   const { diary, isLoading, error, fetchDiary } = useDiaryStore();
@@ -67,6 +67,32 @@ const PageClient = ({ date }: { date: string }) => {
     눈: '❄️',
   };
 
+  const { fetchContent, lowContents, highContents } = useContentStore();
+
+  const handleFetchContent = async () => {
+    if (!id) return;
+
+    await fetchContent(Number(id));
+
+    console.log(lowContents);
+    console.log(highContents);
+
+    // 콘텐츠가 고도화(high level)일 경우
+    if (highContents?.level) {
+      router.push(`/contents/level3?id=${id}`);
+    } // low level의 경우 level 값 확인
+    else if (lowContents?.level) {
+      const level = lowContents.level; // 첫 콘텐츠의 level 기준
+
+      if (level === 1) {
+        console.log(lowContents);
+        router.push(`/contents/level1?id=${id}`);
+      } else if (level === 2) router.push(`/contents/level2?id=${id}`);
+    } else {
+      console.warn('콘텐츠 없음');
+    }
+  };
+
   return (
     <div className="flex flex-col gap-10 px-4 mx-auto sm:px-6 md:px-8">
       <div className="flex flex-col items-center justify-end gap-2 text-xl h-28 iphoneSE:mt-5">
@@ -119,7 +145,7 @@ const PageClient = ({ date }: { date: string }) => {
       <div
         className="relative flex flex-col items-center justify-around w-full h-16 p-4 border cursor-pointer border-1 border-main-yellow bg-content-yellow rounded-xl hover:bg-main-yellow"
         onClick={() => {
-          router.push('/contents/level1');
+          handleFetchContent();
         }}
       >
         <div className="absolute p-1 px-2 text-sm -top-2 -left-3 bg-[#ffad20] rounded-xl text-white">

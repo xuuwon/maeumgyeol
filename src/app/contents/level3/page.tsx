@@ -1,19 +1,56 @@
 'use client';
 
 import Button from '@/components/button/Button';
+import { useContentStore } from '@/stores/contentStore';
 import clsx from 'clsx';
 import { ChevronLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 
 const Page = () => {
-  const data = {
-    date: '2025-04-10',
+  const [firstInput, setFirstInput] = useState<string>('');
+  const [secondInput, setSecondInput] = useState<string>('');
+  const [thirdInput, setThirdInput] = useState<string>('');
+
+  const searchParams = useSearchParams();
+  const { saveContentBundle, isSaved } = useContentStore();
+  const id = Number(searchParams.get('id'));
+
+  const saved = isSaved[id] ?? false;
+
+  // contentBundle 형태로 묶기
+  const contentBundle = {
     level: 3,
-    title: '감사 일기',
-    text: '오늘 하루 감사했던 일을 \n3가지 작성해 보세요.',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHilk2EkOTSbl28IsCumTdX_m-IrcQ9BgddA&s',
+
+    level_1_content: {
+      level: 0,
+      name: '',
+      korean_name: '',
+      instruction: [],
+    },
+
+    level_2_content: {
+      level: 0,
+      name: '',
+      korean_name: '',
+      instruction: [],
+    },
+
+    level_3_content: {
+      level: 3,
+      name: 'GRATITUDE_JOURNAL',
+      korean_name: '감사 일기',
+      instruction: ['오늘 하루 감사했던 일을 3가지 작성해 보세요.'],
+      sentence1: firstInput,
+      sentence2: secondInput,
+      sentence3: thirdInput,
+    },
+  };
+
+  const handleSave = () => {
+    console.log('저장할 콘텐츠:', contentBundle);
+    saveContentBundle(contentBundle, id); // 실제 저장 함수 호출
+    router.back();
   };
 
   const dateObj = new Date();
@@ -24,28 +61,13 @@ const Page = () => {
 
   const router = useRouter();
 
-  const [firstInput, setFirstInput] = useState<string>('');
-  const [secondInput, setSecondInput] = useState<string>('');
-  const [thirdInput, setThirdInput] = useState<string>('');
-
   const inputStyle =
     'w-full py-2 pl-3 border rounded-lg border-1 border-main-yellow bg-main-background focus:outline-none';
 
-  const handleSubmit = () => {
-    const dataToSend = {
-      user_id: 'abc123', // 실제 값으로 변경하세요
-      date: data.date,
-      level: 3,
-      content_type: '자기 칭찬',
-      input: {
-        '1': firstInput,
-        '2': secondInput,
-        '3': thirdInput,
-      },
-    };
-
-    console.log(dataToSend);
-  };
+  const isSaveDisabled =
+    firstInput.trim().length === 0 ||
+    secondInput.trim().length === 0 ||
+    thirdInput.trim().length === 0;
 
   return (
     <div className="flex flex-col h-screen gap-10 px-4 mx-auto sm:px-6 md:px-8">
@@ -62,9 +84,11 @@ const Page = () => {
       </div>
 
       <div className="flex flex-col items-center gap-16 h-[60%]">
-        <p className="text-xl">{data.title}</p>
+        <p className="text-xl">감사 일기</p>
         <div className="flex flex-col justify-center w-full h-24 gap-3 p-5 border border-1 border-main-yellow bg-bg-yellow rounded-xl">
-          <p className="text-center whitespace-pre-line">{data.text}</p>
+          <p className="text-center whitespace-pre-line">
+            오늘 하루 감사했던 일을 3가지 작성해 보세요.
+          </p>
         </div>
 
         <div className="flex flex-col w-full gap-5">
@@ -111,16 +135,21 @@ const Page = () => {
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-3">
-        <Button
-          type="yellow"
-          text="저장하기"
-          func={() => {
-            handleSubmit();
-          }}
-        />
-        <p className="text-sm">저장 후에도 다시 수정/확인할 수 있어요!</p>
-      </div>
+      {!saved && (
+        <div className="flex flex-col items-center gap-3">
+          <Button
+            type={isSaveDisabled ? 'gray' : 'yellow'}
+            text="저장하기"
+            func={() => {
+              if (!isSaveDisabled) {
+                handleSave();
+                router.back();
+              }
+            }}
+          />
+          <p className="text-sm">저장 후에도 다시 확인할 수 있어요!</p>
+        </div>
+      )}
     </div>
   );
 };

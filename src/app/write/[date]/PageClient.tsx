@@ -17,6 +17,7 @@ import { customHighlight } from '@/extension/customHighlight';
 import { useDiaryStore } from '@/stores/diaryStore';
 import { useCalendarStore } from '@/stores/calendarStore';
 import Analyzing from '@/app/analyzing/page';
+import { useContentStore } from '@/stores/contentStore';
 
 const PageClient = ({ date }: { date: string }) => {
   const today = new Date(date);
@@ -142,7 +143,7 @@ const PageClient = ({ date }: { date: string }) => {
     }
 
     setShowSaveModal(false);
-    setSubmitted(true); // ✅ 이 시점에만 true로 설정
+    setSubmitted(true);
 
     await writeDiary({
       diary_date: formattedDate,
@@ -152,6 +153,10 @@ const PageClient = ({ date }: { date: string }) => {
       images_url: imageFiles,
     });
   };
+
+  const { fetchContent } = useContentStore();
+
+  const handleFetchcontent = () => {};
 
   if (checking) {
     return <Analyzing />;

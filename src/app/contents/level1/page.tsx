@@ -1,25 +1,50 @@
 'use client';
 
 import Button from '@/components/button/Button';
+import { useContentStore } from '@/stores/contentStore';
 import { ChevronLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 
 const Page = () => {
-  const data = {
-    date: '2025-04-10',
-    level: 1,
-    title: '호흡 명상',
-    text: '허리를 세우고 편한 자세를 갖춘 후 눈을 감은 채 호흡에 집중합니다. \n다른 생각은 하지 말고 숨이 어떻게 나가고 들어오게 되는지에 집중해 보세요.',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHilk2EkOTSbl28IsCumTdX_m-IrcQ9BgddA&s',
+  const searchParams = useSearchParams();
+  const { lowContents: data, saveContentBundle, isSaved } = useContentStore();
+  const id = Number(searchParams.get('id'));
+
+  const saved = isSaved[id] ?? false;
+
+  const contentBundle = {
+    level: 1, // 현재 콘텐츠 레벨
+
+    level_1_content: {
+      level: 1,
+      name: data?.name ?? '', // undefined 대신 빈 문자열 넣기
+      korean_name: data?.korean_name ?? '',
+      instruction: data?.instruction ?? [],
+    },
+
+    level_2_content: {
+      level: 0,
+      name: '',
+      korean_name: '',
+      instruction: [],
+    },
+
+    level_3_content: {
+      level: 0,
+      name: '',
+      korean_name: '',
+      instruction: [],
+      sentence1: '',
+      sentence2: '',
+      sentence3: '',
+    },
   };
 
-  const dateObj = new Date();
-  const year = dateObj.getFullYear();
-  const month = dateObj.getMonth() + 1;
-  const day = dateObj.getDate();
-  const formattedDate = `${year}년 ${month}월 ${day}일`;
+  const handleSave = () => {
+    console.log(contentBundle);
+    saveContentBundle(contentBundle, Number(id));
+  };
 
   const router = useRouter();
 
@@ -33,31 +58,33 @@ const Page = () => {
         }}
       />
       <div className="flex flex-col items-center justify-center gap-2 text-xl h-36 iphoneSE:mt-5">
-        <p>{formattedDate}</p>
-        <p>마음 챙김 콘텐츠</p>
+        \<p>마음 챙김 콘텐츠</p>
       </div>
 
       <div className="flex flex-col items-center gap-8 mb-9">
-        <p className="text-xl">{data.title}</p>
+        <p className="text-xl">{data?.korean_name}</p>
         <img
-          src={data.image}
+          src="/images/level1.jpg"
           className="w-full h-auto border border-1 border-main-yellow rounded-xl"
         />
         <div className="flex flex-col justify-center w-full gap-3 p-5 border h-36 border-1 border-main-yellow bg-bg-yellow rounded-xl">
-          <p className="text-center whitespace-pre-line">{data.text}</p>
+          <p className="text-center whitespace-pre-line">{data?.instruction[0]}</p>
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-3 mb-10">
-        <Button
-          type="yellow"
-          text="저장하기"
-          func={() => {
-            router.back();
-          }}
-        />
-        <p className="text-sm">저장 후에도 다시 확인할 수 있어요!</p>
-      </div>
+      {!saved && (
+        <div className="flex flex-col items-center gap-3 mb-10">
+          <Button
+            type="yellow"
+            text="저장하기"
+            func={() => {
+              handleSave();
+              router.back();
+            }}
+          />
+          <p className="text-sm">저장 후에도 다시 확인할 수 있어요!</p>
+        </div>
+      )}
     </div>
   );
 };
