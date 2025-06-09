@@ -8,7 +8,7 @@ export default function Home() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col items-center justify-around w-full h-screen px-4 py-12 sm:px-6 md:px-8">
+    <div className="flex flex-col items-center justify-around w-full h-screen px-4 py-10 sm:px-6 md:px-8">
       {/* 제목 */}
       <div className="text-2xl sm:text-3xl">마음결 (心結)</div>
 
@@ -29,8 +29,7 @@ export default function Home() {
           마음결은 당신의 감정을 이해하고 <br />
           하루를 편안히 마무리하게 돕는 서비스입니다.💝
           <br />
-          귀여운 감자몽과 함께 <br />
-          마음의 휴식을 경험해보세요.🥰
+          귀여운 감자몽과 함께 마음의 휴식을 취해보세요.🥰
         </p>
       </div>
 
