@@ -58,7 +58,7 @@ const Page = () => {
         }}
       />
       <div className="flex flex-col items-center justify-center gap-2 text-xl h-36 iphoneSE:mt-5">
-        \<p>마음 챙김 콘텐츠</p>
+        <p>마음 챙김 콘텐츠</p>
       </div>
 
       <div className="flex flex-col items-center gap-8 mb-9">
