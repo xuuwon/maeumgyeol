@@ -104,6 +104,7 @@ export const useDiaryStore = create<DiaryState>((set) => ({
 
       console.log('분석 결과:', detailData);
       set({ isLoading: false, success: true, diary: detailData });
+      await useAuthStore.getState().fetchUser();
     } catch (err: unknown) {
       let message = '알 수 없는 에러';
 

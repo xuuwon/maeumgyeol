@@ -99,11 +99,15 @@ const PageClient = ({ date }: { date: string }) => {
     };
   }, []);
 
-  const checkSuccessAndNavigate = () => {
-    if (success && diary?.date) {
+  const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (submitted && success && diary?.date) {
       router.push(`/write/detail/${diary.date}`);
+
+      setSubmitted(false);
     }
-  };
+  }, [submitted, success, diary?.date]);
 
   // 저장 처리 함수
   const handleSubmit = async () => {
@@ -117,8 +121,8 @@ const PageClient = ({ date }: { date: string }) => {
     }
 
     setShowSaveModal(false);
+    setSubmitted(true); // ✅ 이 시점에만 true로 설정
 
-    // 실제 저장 처리
     await writeDiary({
       diary_date: formattedDate,
       weather,
@@ -126,8 +130,6 @@ const PageClient = ({ date }: { date: string }) => {
       content,
       images_url: imageFiles,
     });
-
-    checkSuccessAndNavigate();
   };
 
   return (
