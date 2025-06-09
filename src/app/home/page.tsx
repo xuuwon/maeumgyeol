@@ -87,7 +87,7 @@ const Page = () => {
             router.push('/contents/level3');
           }}
         >
-          오늘의 마음 챙김 콘텐츠를 확인해 봐!
+          오늘의 마음 챙김 콘텐츠를 확인해 봐!🐾
           {/* 꼬리 */}
           <div className="absolute w-4 h-4 rotate-45 bg-main-yellow -bottom-2 left-16"></div>
         </div>
@@ -100,7 +100,7 @@ const Page = () => {
         />
       </div>
 
-      <div className="flex justify-center w-full">
+      <div className="flex justify-center w-full mb-5">
         <Button
           type="yellow"
           text="일기 작성하기"
