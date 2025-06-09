@@ -24,11 +24,39 @@ const Page = () => {
     setItems(categoryKey); // zustand에서 아이템 가져오기
   }, [categoryKey, setItems]);
 
+  useEffect(() => {
+    if (!user) return;
+
+    setBuyBackground(getBackgroundImageUrl(user?.equipped_background_image_url));
+    setBuyAppliedImage(
+      user?.equipped_accessory_image_url
+        ? user?.equipped_accessory_image_url
+        : '/images/characters/basic_character.png'
+    );
+  }, [user]);
+
   const filteredItems = data.filter((item) => item.category === categoryKey);
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
 
   // 미리보기 후 구매용 - 초기값은 유저 정보의 캐릭터 및 배경
-  const [buyBackground, setBuyBackground] = useState<string | null>(null); // 배경용
+  const getBackgroundImageUrl = (equippedUrl: string | null | undefined): string | null => {
+    if (!equippedUrl) return null;
+
+    if (equippedUrl.toLowerCase().includes('cherryBlossom')) {
+      return '/images/background/store_cherryBlossom.png';
+    }
+
+    if (equippedUrl.toLowerCase().includes('beach')) {
+      return '/images/background/store_beach.png';
+    }
+
+    // 다른 배경이 추가될 경우 여기에 else if 추가
+    return null;
+  };
+
+  const [buyBackground, setBuyBackground] = useState<string | null>(
+    getBackgroundImageUrl(user?.equipped_background_image_url)
+  );
   const [buyAppliedImage, setBuyAppliedImage] = useState<string>(
     user?.equipped_accessory_image_url
       ? user?.equipped_accessory_image_url
