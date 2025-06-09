@@ -15,8 +15,8 @@ import { ToolBar } from '@/components/toolBar/ToolBar';
 import LayerPopup from '@/components/layerPopup/LayerPopup';
 import { customHighlight } from '@/extension/customHighlight';
 import { useDiaryStore } from '@/stores/diaryStore';
-import Analyzing from '@/app/analyzing/page';
 import { useCalendarStore } from '@/stores/calendarStore';
+import Analyzing from '@/app/analyzing/page';
 
 const PageClient = ({ date }: { date: string }) => {
   const today = new Date(date);
@@ -154,7 +154,7 @@ const PageClient = ({ date }: { date: string }) => {
   };
 
   if (checking) {
-    return <Analyzing type="loading" />;
+    return <Analyzing />;
   }
 
   return (
