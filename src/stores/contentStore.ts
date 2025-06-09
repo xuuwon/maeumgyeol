@@ -55,7 +55,7 @@ type ContentStore = {
 };
 
 const api = axios.create({
-  baseURL: 'http://sentiment-server.duckdns.org/api/v1',
+  baseURL: 'https://sentiment-server.duckdns.org/api/v1',
 });
 
 api.interceptors.request.use((config) => {

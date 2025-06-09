@@ -17,7 +17,6 @@ import { customHighlight } from '@/extension/customHighlight';
 import { useDiaryStore } from '@/stores/diaryStore';
 import { useCalendarStore } from '@/stores/calendarStore';
 import Analyzing from '@/app/analyzing/page';
-import { useContentStore } from '@/stores/contentStore';
 
 const PageClient = ({ date }: { date: string }) => {
   const today = new Date(date);
@@ -154,10 +153,6 @@ const PageClient = ({ date }: { date: string }) => {
     });
   };
 
-  const { fetchContent } = useContentStore();
-
-  const handleFetchcontent = () => {};
-
   if (checking) {
     return <Analyzing />;
   }
@@ -237,7 +232,7 @@ const PageClient = ({ date }: { date: string }) => {
                     }`}
                     onClick={() => {
                       setWeather(w);
-                      setDropdown(false); // ⛔️ 여기까지는 잘 동작
+                      setDropdown(false);
                     }}
                   >
                     {w === '맑음' ? '☀️' : w === '흐림' ? '☁️' : w === '비' ? '🌧️' : '❄️'} {w}
