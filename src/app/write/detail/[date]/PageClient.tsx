@@ -9,8 +9,7 @@ import React, { useEffect } from 'react';
 const PageClient = ({ date }: { date: string }) => {
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
-  const { diary, isLoading, error, fetchDiary } = useDiaryStore();
-  console.log(isLoading, error);
+  const { diary, fetchDiary } = useDiaryStore();
 
   useEffect(() => {
     if (id) {
@@ -67,29 +66,33 @@ const PageClient = ({ date }: { date: string }) => {
     눈: '❄️',
   };
 
-  const { fetchContent, lowContents, highContents } = useContentStore();
+  const { fetchContent } = useContentStore();
 
   const handleFetchContent = async () => {
     if (!id) return;
 
-    await fetchContent(Number(id));
+    try {
+      const content = await fetchContent(Number(id));
+      if (!content) {
+        console.warn('콘텐츠 없음');
+        return;
+      }
 
-    console.log(lowContents);
-    console.log(highContents);
-
-    // 콘텐츠가 고도화(high level)일 경우
-    if (highContents?.level) {
-      router.push(`/contents/level3?id=${id}`);
-    } // low level의 경우 level 값 확인
-    else if (lowContents?.level) {
-      const level = lowContents.level; // 첫 콘텐츠의 level 기준
-
-      if (level === 1) {
-        console.log(lowContents);
-        router.push(`/contents/level1?id=${id}`);
-      } else if (level === 2) router.push(`/contents/level2?id=${id}`);
-    } else {
-      console.warn('콘텐츠 없음');
+      // HighLevelContent 예시: sentence1 필드가 있으면 고레벨 콘텐츠로 간주
+      if ('sentence1' in content) {
+        router.push(`/contents/level3?id=${id}`);
+      } else {
+        const level = content.level;
+        if (level === 1) {
+          router.push(`/contents/level1?id=${id}`);
+        } else if (level === 2) {
+          router.push(`/contents/level2?id=${id}`);
+        } else {
+          console.warn('알 수 없는 레벨');
+        }
+      }
+    } catch (error) {
+      console.error('콘텐츠 호출 중 오류:', error);
     }
   };
 
@@ -111,9 +114,9 @@ const PageClient = ({ date }: { date: string }) => {
           dangerouslySetInnerHTML={{ __html: diary?.content ?? '' }}
         />
 
-        {data?.image_urls.length !== 0 && (
+        {data?.image_urls?.length && data?.image_urls?.length > 0 ? (
           <div className="flex items-center overflow-x-auto overflow-y-hidden w-full h-[120px] gap-3 px-3 py-2 border border-1 border-main-yellow bg-bg-yellow rounded-xl">
-            {data?.image_urls.map((url, idx) => (
+            {data.image_urls.map((url, idx) => (
               <div
                 key={idx}
                 className="relative flex-shrink-0 h-24 overflow-hidden w-28 rounded-xl"
@@ -126,7 +129,7 @@ const PageClient = ({ date }: { date: string }) => {
               </div>
             ))}
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* 감정 분석 결과 */}
@@ -144,9 +147,7 @@ const PageClient = ({ date }: { date: string }) => {
       {/* 마음챙김 콘텐츠 배너 자리 */}
       <div
         className="relative flex flex-col items-center justify-around w-full h-16 p-4 border cursor-pointer border-1 border-main-yellow bg-content-yellow rounded-xl hover:bg-main-yellow"
-        onClick={() => {
-          handleFetchContent();
-        }}
+        onClick={handleFetchContent}
       >
         <div className="absolute p-1 px-2 text-sm -top-2 -left-3 bg-[#ffad20] rounded-xl text-white">
           Click!
