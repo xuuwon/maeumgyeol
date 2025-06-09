@@ -1,139 +1,147 @@
 import { create } from 'zustand';
+import axios from 'axios';
+import { useAuthStore } from './authStore';
 
 export type Item = {
   id: number;
   name: string;
   category: 'accessory' | 'background';
+  description: string;
   price: number;
-  imageUrl: string;
-  isOwned: boolean;
-  isEquipped: boolean;
+  item_image_url: string;
+  applied_image_url: string;
+  purchased: boolean;
+  equipped: boolean;
 };
 
+const api = axios.create({
+  baseURL: 'http://sentiment-server.duckdns.org/api/v1',
+});
+
+api.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().access_token;
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
+});
+
 type ItemStore = {
-  items: Item[]; // 스토어용 (전체)
-  setItems: (items: Item[]) => void;
-
-  ownedItems: Item[]; // 보관함용 (isOwned === true)
+  items: Item[];
+  ownedItems: Item[];
+  setItems: (category: 'accessory' | 'background') => Promise<void>;
   updateOwnedItems: () => void;
-
-  buyItem: (id: number) => void;
-  equipItem: (id: number) => void; // 아이템 적용 - 다른 아이템 모두 해제
-  unequipItem: (id: number) => void; // 아이템 해제 = 기본으로 되돌림
+  buyItem: (id: number) => Promise<void>;
+  equipItem: (id: number) => Promise<void>;
+  unequipItem: (id: number) => Promise<void>;
 };
 
 export const useItemStore = create<ItemStore>((set, get) => ({
   items: [],
-
-  setItems: (items) => {
-    set({ items });
-    // 동시에 ownedItems도 업데이트
-    set({ ownedItems: items.filter((item) => item.isOwned) });
-  },
-
   ownedItems: [],
+
+  setItems: async (category) => {
+    try {
+      const res = await api.get<Item[]>('/stores/items', { params: { category } });
+      const allItems = res.data;
+
+      set({
+        items: allItems,
+        ownedItems: allItems.filter((item) => item.purchased),
+      });
+    } catch (err) {
+      console.error(err);
+      alert('아이템 불러오기 실패');
+    }
+  },
 
   updateOwnedItems: () => {
     const { items } = get();
-    set({ ownedItems: items.filter((item) => item.isOwned) });
+    set({ ownedItems: items.filter((item) => item.purchased) });
   },
 
-  buyItem: async (id: number) => {
-    const res = await fetch(`/api/items/buy`, {
-      // 주소 변경
-      method: 'POST',
-      body: JSON.stringify({ itemId: id }),
-      headers: { 'Content-Type': 'application/json' },
-    });
+  buyItem: async (id) => {
+    try {
+      const res = await api.post(`/stores/items/${id}/purchase`);
+      console.log(res.data);
 
-    const data = await res.json();
-
-    if (data.success) {
-      // 성공 시 클라이언트 상태 업데이트
       set((state) => ({
-        items: state.items.map((item) => (item.id === id ? { ...item, isOwned: true } : item)),
+        items: state.items.map((item) => (item.id === id ? { ...item, purchased: true } : item)),
       }));
-    } else {
-      alert(data.message || '구매 실패');
+
+      get().updateOwnedItems();
+      await useAuthStore.getState().fetchUser(); // 유저 코인 정보 업데이트
+    } catch (err) {
+      console.error(err);
+      alert('구매 요청 실패');
     }
   },
 
-  equipItem: async (id: number) => {
-    const { items } = get();
+  equipItem: async (id) => {
+    const { items, unequipItem } = get();
     const selected = items.find((item) => item.id === id);
     if (!selected) return;
 
-    // 서버에 장착 요청
-    const res = await fetch(`/api/items/equip`, {
-      // 주소 변경
-      method: 'POST',
-      body: JSON.stringify({
-        id,
-        equip: true,
-      }),
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const currentlyEquipped = items.find(
+      (item) => item.category === selected.category && item.equipped
+    );
 
-    const data = await res.json();
+    if (currentlyEquipped && currentlyEquipped.id !== id) {
+      await unequipItem(currentlyEquipped.id);
+    }
 
-    if (data.success) {
+    try {
+      console.log('장착 API 호출 시작...');
+      const res = await api.post(`/stores/items/${id}/equip`);
+      console.log('장착 API 응답:', res.data); // 서버 응답 확인
+
+      // success 필드 체크를 제거하고 일단 무조건 실행
       set({
         items: items.map((item) =>
-          item.category === selected.category
-            ? {
-                ...item,
-                isEquipped: item.id === id ? true : false,
-              }
-            : item
+          item.category === selected.category ? { ...item, equipped: item.id === id } : item
         ),
       });
+
+      try {
+        await useAuthStore.getState().fetchUser();
+        console.log('fetchUser 호출 완료!');
+      } catch (e) {
+        console.error('fetchUser 호출 실패:', e);
+      }
+    } catch (err) {
+      console.error('장착 API 에러:', err);
+      alert('장착 요청 실패');
     }
   },
 
-  unequipItem: async (id: number) => {
+  unequipItem: async (id) => {
     const { items } = get();
     const selected = items.find((item) => item.id === id);
     if (!selected) return;
 
-    // 서버에 해제 요청
-    const res = await fetch(`/api/items/equip`, {
-      // 주소 변경
-      method: 'POST',
-      body: JSON.stringify({
-        id,
-        equip: false,
-      }),
-      headers: { 'Content-Type': 'application/json' },
-    });
+    try {
+      console.log('해제 API 호출 시작...');
+      const res = await api.post(`/stores/items/${id}/unequip`);
+      console.log('해제 API 응답:', res.data); // 서버 응답 확인
 
-    const data = await res.json();
-
-    if (data.success) {
+      // success 필드 체크를 제거하고 일단 무조건 실행
       set({
-        items: items.map((item) => {
-          if (item.category !== selected.category) {
-            return item; // 카테고리가 다르면 변경 없음
-          }
-
-          if (item.category === 'accessory') {
-            // 액세서리는 id가 1번이면 착용, 나머지는 해제
-            return {
-              ...item,
-              isEquipped: item.id === 1, // 기본 캐릭터
-            };
-          }
-
-          if (item.category === 'background') {
-            // 배경은 모두 해제
-            return {
-              ...item,
-              isEquipped: false,
-            };
-          }
-
-          return item;
-        }),
+        items: items.map((item) =>
+          item.category === selected.category ? { ...item, equipped: false } : item
+        ),
       });
+
+      // fetchUser 호출을 무조건 실행
+      console.log('fetchUser 호출 시작...');
+      try {
+        await useAuthStore.getState().fetchUser();
+        console.log('fetchUser 호출 완료!');
+      } catch (e) {
+        console.error('fetchUser 호출 실패:', e);
+      }
+    } catch (err) {
+      console.error('해제 API 에러:', err);
+      alert('해제 요청 실패');
     }
   },
 }));

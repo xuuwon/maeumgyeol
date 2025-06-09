@@ -11,7 +11,5 @@ interface DetailPageProps {
 export default async function DetailPage({ params }: DetailPageProps) {
   const { date } = await params;
 
-  // API 호출
-
   return <PageClient date={date} />;
 }

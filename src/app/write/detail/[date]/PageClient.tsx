@@ -1,35 +1,24 @@
 'use client';
 
 import Button from '@/components/button/Button';
-// import { useDiaryStore } from '@/stores/diaryStore';
-import { useRouter } from 'next/navigation';
-import React from 'react';
+import { useDiaryStore } from '@/stores/diaryStore';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect } from 'react';
 
 const PageClient = ({ date }: { date: string }) => {
   console.log(date);
-  // const { diary } = useDiaryStore();
-  // console.log(diary);
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
+  const { diary, isLoading, error, fetchDiary } = useDiaryStore();
+  console.log(isLoading, error);
 
-  const data = {
-    date: '2025-05-26',
-    weather: '맑음' as WeatherName,
-    title: '혼자여서 더 좋았던 날',
-    content:
-      '<p><span>오랜만에 혼자 영화관에 갔다. </span></p><p><span>큰 기대 없이 본 영화였는데, 울고 웃고 다 하고 나니 마음이 꽤 편해졌다. 옆 사람 신경 안 써도 되는 자리에서, </span><mark class="custom-highlight" style="background-color: #81C784;">혼자만의 시간에 집중</mark><span>할 수 있었던 게 참 좋았다. 영화 끝나고 근처 카페 가서 멍하니 앉아 있다가 </span><span style="color: #283593">책도 좀 읽었다.</span><span> 누구 눈치도 안 보고, 하고 싶은 거 마음대로 한 하루. 오히려 혼자라서 더 자유롭고 좋았다. </span><span style="color: #F57C00"><em>이런 하루, 자주 만들고 싶다.</em></span></p>',
-    imageUrls: [],
-    emotion: {
-      label: 1,
-      name: '행복' as EmotionName,
-      message: '오늘은 행복한 하루네요!\n기분 좋은 일이 가득하길 바라요',
-      mapping: {
-        '0': '중립',
-        '1': '행복',
-        '2': '슬픔',
-        '3': '불안',
-        '4': '분노',
-      },
-    },
-  };
+  useEffect(() => {
+    if (id) {
+      fetchDiary(id);
+    }
+  }, [id, fetchDiary]);
+
+  const data = diary;
 
   const dateObj = new Date(date);
   const year = dateObj.getFullYear();
@@ -39,15 +28,36 @@ const PageClient = ({ date }: { date: string }) => {
 
   const router = useRouter();
 
-  type EmotionName = '중립' | '행복' | '슬픔' | '불안' | '분노';
+  type EmotionName =
+    | '평온'
+    | '행복'
+    | '슬픔'
+    | '불안'
+    | '분노'
+    | '피곤'
+    | '외로움'
+    | '지루함'
+    | '후회'
+    | '희망'
+    | '질투'
+    | '혼란'
+    | '당황';
   type WeatherName = '맑음' | '흐림' | '비' | '눈';
 
   const emotionToEmoji: Record<EmotionName, string> = {
-    중립: '🙂',
+    평온: '😐',
     행복: '😊',
-    슬픔: '😭',
-    불안: '😰',
+    슬픔: '🥲',
+    불안: '😳',
     분노: '😠',
+    피곤: '😩',
+    외로움: '😔',
+    지루함: '😑',
+    후회: '😞',
+    희망: '🤩',
+    질투: '😒',
+    혼란: '🤯',
+    당황: '😳',
   };
 
   const weatherToEmoji: Record<WeatherName, string> = {
@@ -67,13 +77,17 @@ const PageClient = ({ date }: { date: string }) => {
       {/* 일기 데이터 */}
       <div className="flex flex-col gap-3 w-full min-h-[197px] border border-1 border-main-yellow bg-bg-yellow rounded-xl p-4">
         <h2 className="text-xl text-[#ffad20]">
-          {weatherToEmoji[data.weather]} {data.title} {weatherToEmoji[data.weather]}
+          {weatherToEmoji[data?.weather ?? '맑음']} {data?.title}{' '}
+          {weatherToEmoji[data?.weather ?? '맑음']}
         </h2>
-        <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: data.content }} />
+        <div
+          className="prose max-w-none"
+          dangerouslySetInnerHTML={{ __html: diary?.content ?? '' }}
+        />
 
-        {data.imageUrls.length !== 0 && (
+        {data?.image_urls.length !== 0 && (
           <div className="flex items-center overflow-x-auto overflow-y-hidden w-full h-[120px] gap-3 px-3 py-2 border border-1 border-main-yellow bg-bg-yellow rounded-xl">
-            {data.imageUrls.map((url, idx) => (
+            {data?.image_urls.map((url, idx) => (
               <div
                 key={idx}
                 className="relative flex-shrink-0 h-24 overflow-hidden w-28 rounded-xl"
@@ -94,9 +108,10 @@ const PageClient = ({ date }: { date: string }) => {
         <p className="text-lg">분석 결과</p>
         <div className="flex flex-col items-center justify-around w-full h-32 p-4 border border-1 border-main-yellow bg-bg-yellow rounded-xl">
           <p className="text-lg">
-            오늘의 감정: {data.emotion.name} {emotionToEmoji[data.emotion.name]}
+            오늘의 감정: {data?.analyzed_emotion.korean_name}{' '}
+            {emotionToEmoji[data?.analyzed_emotion.korean_name ?? '행복']}
           </p>
-          <p className="text-center whitespace-pre-line">{data.emotion.message}</p>
+          <p className="text-center whitespace-pre-line">{data?.analyzed_emotion.message}</p>
         </div>
       </div>
 

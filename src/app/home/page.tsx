@@ -5,8 +5,14 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { useAuthStore } from '@/stores/authStore';
+import { useMediaQuery } from 'react-responsive';
 
 const Page = () => {
+  const user = useAuthStore((state) => state.user);
+  const equippedAccessory = user?.equipped_accessory_image_url;
+  const equippedBackground = user?.equipped_background_image_url;
+
   const now = new Date();
 
   const year = now.getFullYear();
@@ -23,12 +29,49 @@ const Page = () => {
 
   const router = useRouter();
 
+  const isMobile = useMediaQuery({ maxWidth: 500 });
+  const isTablet = useMediaQuery({ minWidth: 501 });
+
+  // background 이미지 결정 로직
+  let bgUrl: string | undefined;
+
+  if (equippedBackground) {
+    if (equippedBackground.includes('cherryBlossom')) {
+      if (isTablet) {
+        bgUrl = '/images/background/cherryBlossom_tablet.png';
+      } else if (isMobile) {
+        bgUrl = '/images/background/cherryBlossom_mobile.png';
+      } else {
+        bgUrl = equippedBackground;
+      }
+    } else if (equippedBackground.includes('beach')) {
+      if (isTablet) {
+        bgUrl = '/images/background/beach_tablet.png';
+      } else if (isMobile) {
+        bgUrl = '/images/background/beach_mobile.png';
+      } else {
+        bgUrl = equippedBackground;
+      }
+    } else {
+      bgUrl = equippedBackground;
+    }
+  }
+
   return (
     <div
       className={clsx(
-        'h-screen bg-[url(/images/background/cherryBlossom_mobile.png)] sm:bg-[url(/images/background/cherryBlossom_tablet.png)] bg-center bg-no-repeat bg-cover px-4 sm:px-6 md:px-8',
-        'flex flex-col items-center justify-around py-9'
+        'h-screen px-4 sm:px-6 md:px-8 flex flex-col items-center justify-around py-9'
       )}
+      style={
+        bgUrl
+          ? {
+              backgroundImage: `url(${bgUrl})`,
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'top center',
+            }
+          : undefined
+      }
     >
       <div className="flex flex-col items-center gap-4">
         {/* 텍스트 */}
@@ -44,12 +87,12 @@ const Page = () => {
             router.push('/contents/level3');
           }}
         >
-          오늘의 마음 챙김 콘텐츠를 확인해 봐!
+          오늘의 마음 챙김 콘텐츠를 확인해 봐!🐾
           {/* 꼬리 */}
           <div className="absolute w-4 h-4 rotate-45 bg-main-yellow -bottom-2 left-16"></div>
         </div>
         <Image
-          src="/images/characters/basic_character.png" // 예시
+          src={equippedAccessory ? equippedAccessory : '/images/characters/basic_character.png'} // 예시
           alt="메인 캐릭터"
           width={230}
           height={230}
@@ -57,7 +100,7 @@ const Page = () => {
         />
       </div>
 
-      <div className="flex justify-center w-full">
+      <div className="flex justify-center w-full mb-5">
         <Button
           type="yellow"
           text="일기 작성하기"

@@ -1,16 +1,17 @@
 'use client';
 
+import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function NotFound() {
   const router = useRouter();
-  const [isLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  //   useEffect(() => {
-  //     const token = localStorage.getItem('accessToken');
-  //     setIsLoggedIn(!!token);
-  //   }, []);
+  useEffect(() => {
+    const token = useAuthStore.getState().access_token;
+    setIsLoggedIn(!!token);
+  }, []);
 
   const handleGoHome = () => {
     if (isLoggedIn) {

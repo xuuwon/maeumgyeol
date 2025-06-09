@@ -7,9 +7,12 @@ import { SigninSchema, signinSchema } from './signinSchema';
 import Button from '@/components/button/Button';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/stores/authStore';
 
 const Page = () => {
   const router = useRouter();
+  const { signInError, signIn } = useAuthStore();
+  const isFirstLogin = useAuthStore((state) => state.isFirstLogin);
 
   const {
     register,
@@ -20,9 +23,19 @@ const Page = () => {
     mode: 'onBlur', // focus를 벗어날 때 유효성 검사 진행
   });
 
-  const onSubmit = (data: SigninSchema) => {
-    console.log('로그인 데이터:', data);
-    router.push('/home');
+  const onSubmit = async (data: SigninSchema) => {
+    const success = await signIn(data);
+
+    if (success) {
+      if (isFirstLogin) {
+        router.push('/tutorial');
+        return;
+      }
+
+      router.push('/home');
+    } else {
+      console.log(signInError); // 실패 메시지 보여주기 등
+    }
   };
 
   const inputStyle =
@@ -49,7 +62,7 @@ const Page = () => {
       >
         <div className={groupStyle}>
           <label>아이디</label>
-          <input type="text" {...register('id')} className={inputStyle} />
+          <input type="text" {...register('username')} className={inputStyle} />
         </div>
         <div className={groupStyle}>
           <label>비밀번호</label>
@@ -57,10 +70,14 @@ const Page = () => {
         </div>
 
         <div className="mx-auto mt-10">
-          {errors.id ? (
-            <p className={errorTextStlye}>{errors.id.message}</p>
+          {errors.username ? (
+            <p className={errorTextStlye}>{errors.username.message}</p>
           ) : errors.password ? (
             <p className={errorTextStlye}>{errors.password.message}</p>
+          ) : signInError ? (
+            <p className={errorTextStlye}>
+              로그인에 실패하였습니다. <br /> 잠시 후 다시 시도해 주세요.
+            </p>
           ) : (
             <p></p>
           )}

@@ -2,6 +2,7 @@
 
 import Button from '@/components/button/Button';
 import LayerPopup from '@/components/layerPopup/LayerPopup';
+import { useAuthStore } from '@/stores/authStore';
 import { ChevronLeft, Square, SquareCheckBig } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -11,6 +12,7 @@ const Page = () => {
   const [ischecked, setIsChecked] = useState<boolean>(false);
   const [showLayerPopup, setShowLayerPopup] = useState<boolean>(false);
   const router = useRouter();
+  const { user } = useAuthStore();
 
   return (
     <div className="flex flex-col items-center justify-around h-screen px-4 py-20 sm:px-6 md:px-8">
@@ -44,7 +46,7 @@ const Page = () => {
       <div className="flex flex-col gap-5">
         {/* 텍스트 */}
         <div className="flex flex-col items-center">
-          <p>강지웅짱짱맨님</p>
+          <p>{user?.nickname}님</p>
           <p>정말 탈퇴하시겠어요?</p>
         </div>
 
