@@ -142,7 +142,7 @@ const PageClient = ({ date }: { date: string }) => {
     }
 
     setShowSaveModal(false);
-    setSubmitted(true); // ✅ 이 시점에만 true로 설정
+    setSubmitted(true);
 
     await writeDiary({
       diary_date: formattedDate,
@@ -232,7 +232,7 @@ const PageClient = ({ date }: { date: string }) => {
                     }`}
                     onClick={() => {
                       setWeather(w);
-                      setDropdown(false); // ⛔️ 여기까지는 잘 동작
+                      setDropdown(false);
                     }}
                   >
                     {w === '맑음' ? '☀️' : w === '흐림' ? '☁️' : w === '비' ? '🌧️' : '❄️'} {w}

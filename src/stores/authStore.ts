@@ -49,6 +49,10 @@ type AuthState = {
   reset: () => void;
 };
 
+const api = axios.create({
+  baseURL: 'https://sentiment-server.duckdns.org/api/v1',
+});
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
@@ -74,10 +78,7 @@ export const useAuthStore = create<AuthState>()(
       signUp: async (data) => {
         set({ isLoading: true, signUpError: null, signUpSuccess: false });
         try {
-          const res = await axios.post(
-            'http://sentiment-server.duckdns.org/api/v1/users/signup',
-            data
-          );
+          const res = await api.post('/users/signup', data);
           console.log('회원가입 성공', res);
           set({ signUpSuccess: true });
         } catch (err: unknown) {
@@ -95,15 +96,11 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, signInError: null, signInSuccess: false });
 
         try {
-          const res = await axios.post(
-            'http://sentiment-server.duckdns.org/api/v1/users/login',
-            qs.stringify(data),
-            {
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-              },
-            }
-          );
+          const res = await api.post('/users/login', qs.stringify(data), {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          });
 
           const {
             access_token,
@@ -158,7 +155,7 @@ export const useAuthStore = create<AuthState>()(
           const token = get().access_token;
           if (!token) throw new Error('토큰이 없습니다.');
 
-          const res = await axios.get('http://sentiment-server.duckdns.org/api/v1/users/me', {
+          const res = await api.get('/users/me', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
