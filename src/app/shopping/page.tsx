@@ -73,6 +73,12 @@ const Page = () => {
     const selectedItem = data.find((item) => item.id === selectedItemId);
     if (!selectedItem) return;
 
+    if (user && selectedItem.price > user?.coin) {
+      setShowCoinLayerPopup(true);
+      setShowBuyLayerPopup(false);
+      return;
+    }
+
     try {
       await buyItem(selectedItem.id); // 구매 API 호출
       await setItems(categoryKey);
