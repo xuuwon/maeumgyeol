@@ -16,6 +16,7 @@ import LayerPopup from '@/components/layerPopup/LayerPopup';
 import { customHighlight } from '@/extension/customHighlight';
 import { useDiaryStore } from '@/stores/diaryStore';
 import Analyzing from '@/app/analyzing/page';
+import { useCalendarStore } from '@/stores/calendarStore';
 
 const PageClient = ({ date }: { date: string }) => {
   const today = new Date(date);
@@ -24,6 +25,7 @@ const PageClient = ({ date }: { date: string }) => {
   const day = today.getDate();
   const todayDate = `${year}년 ${month}월 ${day}일`;
   const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+  const formattedMonth = `${year}-${month.toString().padStart(2, '0')}`;
 
   const [dropdown, setDropdown] = useState<boolean>(false);
   const [weather, setWeather] = useState<string>('날씨');
@@ -57,6 +59,25 @@ const PageClient = ({ date }: { date: string }) => {
   const error = useDiaryStore((state) => state.error);
   const success = useDiaryStore((state) => state.success);
   const diary = useDiaryStore((state) => state.diary);
+
+  const { fetchEmotions } = useCalendarStore();
+
+  // 일기 존재하는지 확인용
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    const checkTodayDiary = async () => {
+      await fetchEmotions(formattedMonth);
+      const hasDiary = !!useCalendarStore.getState().emotions[formattedDate];
+      if (hasDiary) {
+        router.replace(`/write/detail/${formattedDate}`);
+      } else {
+        setChecking(false); // ✅ 일기 없을 때만 본문 보이기
+      }
+    };
+
+    checkTodayDiary();
+  }, []);
 
   // 외부 클릭 감지
   useEffect(() => {
@@ -131,6 +152,10 @@ const PageClient = ({ date }: { date: string }) => {
       images_url: imageFiles,
     });
   };
+
+  if (checking) {
+    return <Analyzing type="loading" />;
+  }
 
   return (
     <>

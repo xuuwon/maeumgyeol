@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import React from 'react';
 
-const Analyzing = () => {
+const Analyzing = ({ type }: { type?: string }) => {
   return (
     <div className="flex flex-col items-center h-screen">
       <div className="flex flex-col items-center gap-3 text-xl pt-36">
-        <p>일기 내용을 분석 중입니다...</p>
+        <p>{type == 'loading' ? '로딩 중입니다...' : '일기 내용을 분석 중입니다...'}</p>
         <p>잠시만 기다려 주세요...</p>
       </div>
 
