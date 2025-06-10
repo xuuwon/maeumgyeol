@@ -70,7 +70,7 @@ const PageClient = ({ date }: { date: string }) => {
       await fetchEmotions(formattedMonth);
       const hasDiary = !!useCalendarStore.getState().emotions[formattedDate];
       if (hasDiary) {
-        router.replace(`/write/detail/${formattedDate}`);
+        router.replace(`/write/detail/${formattedDate}?id=${diary?.id}`);
       } else {
         setChecking(false); // ✅ 일기 없을 때만 본문 보이기
       }
@@ -124,7 +124,7 @@ const PageClient = ({ date }: { date: string }) => {
 
   useEffect(() => {
     if (submitted && success && diary?.date) {
-      router.push(`/write/detail/${diary.date}`);
+      router.push(`/write/detail/${diary.date}?id=${diary.id}`);
 
       setSubmitted(false);
     }
