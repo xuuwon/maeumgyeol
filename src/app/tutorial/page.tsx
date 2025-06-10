@@ -61,13 +61,14 @@ const Page = () => {
           <SwiperSlide key={idx}>
             <div className="flex flex-col items-center justify-around h-full px-6 py-12 text-center">
               {/* 이미지 */}
-              <div className="w-[250px] h-[400px] relative drop-shadow-lg">
+              <div className="drop-shadow-lg">
                 <Image
                   src={slide.imgSrc}
                   alt={slide.title}
-                  fill
+                  width={250}
+                  height={400}
                   className="object-contain"
-                  priority={idx === 0}
+                  loading="eager"
                 />
               </div>
 
