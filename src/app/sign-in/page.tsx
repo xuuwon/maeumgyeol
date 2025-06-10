@@ -66,7 +66,12 @@ const Page = () => {
         </div>
         <div className={groupStyle}>
           <label>비밀번호</label>
-          <input type="password" {...register('password')} className={inputStyle} />
+          <input
+            type="password"
+            {...register('password')}
+            className={inputStyle}
+            autoComplete="new-password"
+          />
         </div>
 
         <div className="mx-auto mt-10">
