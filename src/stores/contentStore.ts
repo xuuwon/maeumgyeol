@@ -34,6 +34,7 @@ type ContentStore = {
 
   fetchContent: (id: number) => Promise<LowLevelContent | HighLevelContent | null>;
   saveContentBundle: (bundle: ContentBundle, id: number) => Promise<void>;
+  fetchDetail: (id: number) => Promise<LowLevelContent | HighLevelContent | null>;
   setSavedStatus: (id: number, saved: boolean) => void;
 };
 
@@ -92,6 +93,25 @@ export const useContentStore = create<ContentStore>()(
           console.log('콘텐츠 저장 성공');
         } catch (error) {
           console.error('콘텐츠 저장 실패:', error);
+        }
+      },
+
+      fetchDetail: async (id) => {
+        try {
+          const response = await api.get(`/diaries/${id}/mind-contents`);
+          const data = response.data;
+          console.log(data);
+
+          if (data.level !== 3) {
+            set({ lowContents: data, highContents: null });
+            return data;
+          } else {
+            set({ lowContents: null, highContents: data });
+            return data;
+          }
+        } catch (error) {
+          console.error('콘텐츠 조회 실패:', error);
+          return null;
         }
       },
 
