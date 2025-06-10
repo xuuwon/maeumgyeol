@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useAuthStore } from '@/stores/authStore';
-import { useMediaQuery } from 'react-responsive';
 
 const Page = () => {
   const user = useAuthStore((state) => state.user);
@@ -29,29 +28,18 @@ const Page = () => {
 
   const router = useRouter();
 
-  const isMobile = useMediaQuery({ maxWidth: 500 });
-  const isTablet = useMediaQuery({ minWidth: 501 });
-
   // background 이미지 결정 로직
   let bgUrl: string | undefined;
 
   if (equippedBackground) {
     if (equippedBackground.includes('cherryBlossom')) {
-      if (isTablet) {
-        bgUrl = '/images/background/cherryBlossom_tablet.png';
-      } else if (isMobile) {
-        bgUrl = '/images/background/cherryBlossom_mobile.png';
-      } else {
-        bgUrl = equippedBackground;
-      }
+      bgUrl = '/images/background/cherryBlossom_tablet.jpg';
     } else if (equippedBackground.includes('beach')) {
-      if (isTablet) {
-        bgUrl = '/images/background/beach_tablet.png';
-      } else if (isMobile) {
-        bgUrl = '/images/background/beach_mobile.png';
-      } else {
-        bgUrl = equippedBackground;
-      }
+      bgUrl = '/images/background/beach_tablet.jpg';
+    } else if (equippedBackground.includes('city')) {
+      bgUrl = '/images/background/city_tablet.jpg';
+    } else if (equippedBackground.includes('forest')) {
+      bgUrl = '/images/background/forest_tablet.jpg';
     } else {
       bgUrl = equippedBackground;
     }
@@ -62,25 +50,28 @@ const Page = () => {
       className={clsx(
         'h-screen px-4 sm:px-6 md:px-8 flex flex-col items-center justify-around py-9'
       )}
-      style={
-        bgUrl
-          ? {
-              backgroundImage: `url(${bgUrl})`,
-              backgroundSize: 'cover',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'top center',
-            }
-          : undefined
-      }
     >
-      <div className="flex flex-col items-center gap-4">
+      {/* 배경 오버레이 */}
+      {bgUrl && (
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: `url(${bgUrl})`,
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'top center',
+            opacity: 0.5, // 투명도 설정
+          }}
+        />
+      )}
+      <div className="z-10 flex flex-col items-center gap-4">
         {/* 텍스트 */}
         <p className="text-lg">{todayDate}</p>
         <p className="text-lg">{dayName}</p>
         <p className="text-xl">오늘도 즐거운 하루 보내세요!</p>
       </div>
 
-      <div className="flex flex-col items-center gap-3">
+      <div className="z-10 flex flex-col items-center gap-3">
         <div
           className="relative max-w-xs px-5 py-3 text-white cursor-pointer bg-main-yellow rounded-2xl"
           onClick={() => {
@@ -100,7 +91,7 @@ const Page = () => {
         />
       </div>
 
-      <div className="flex justify-center w-full mb-5">
+      <div className="z-10 flex justify-center w-full mb-5">
         <Button
           type="yellow"
           text="일기 작성하기"
