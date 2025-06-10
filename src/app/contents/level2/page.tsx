@@ -58,7 +58,7 @@ function Content() {
 
       <div className="flex flex-col items-center gap-20 h-[65%]">
         <p className="text-xl">부정적인 원인에 대한 고찰</p>
-        <div className="flex flex-col justify-center w-full h-[60%] gap-3 p-5 border border-1 border-main-yellow bg-bg-yellow rounded-xl">
+        <div className="flex flex-col justify-center w-full min-h-[60%] gap-3 p-5 border border-1 border-main-yellow bg-bg-yellow rounded-xl">
           <div className="flex flex-col gap-5 text-center whitespace-pre-line">
             <p>1. 문제를 감정 없이 명확히 적는다.</p>
             <p>2. 표면적 원인과 근본 원인을 왜?를 반복해 파악한다.</p>
