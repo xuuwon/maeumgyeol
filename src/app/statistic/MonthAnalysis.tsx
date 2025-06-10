@@ -15,6 +15,7 @@ import {
 import { useEffect, useMemo } from 'react';
 import clsx from 'clsx';
 import { EmotionType, useEmotionReportStore } from '@/stores/emotionReportStore';
+import { useMediaQuery } from 'react-responsive';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7f50', '#a29bfe'];
 
@@ -84,10 +85,10 @@ export default function MonthAnalysis({
     );
 
     // 빈값 없는 항목만 필터링
-    const filteredEntries = entries.filter(([, emotion]) => emotion);
+    // const filteredEntries = entries.filter(([, emotion]) => emotion);
 
     for (const [dateStr, emotion] of entries) {
-      if (!emotion) continue; // 빈값 건너뛰기
+      if (!dateStr.startsWith('2025-05')) continue;
 
       const weekLabel = getWeekLabel(dateStr);
       if (!weekLabel) continue;
@@ -97,10 +98,14 @@ export default function MonthAnalysis({
       }
 
       weekStats[weekLabel].total++;
-      if (emotion.includes('행복')) {
+
+      if (emotion && emotion.includes('행복')) {
         weekStats[weekLabel].happy++;
       }
-      emotionCounts[emotion]++;
+
+      if (emotion) {
+        emotionCounts[emotion]++;
+      }
     }
 
     const weekHappinessData: WeekHappinessData[] = Object.entries(weekStats).map(
@@ -115,7 +120,7 @@ export default function MonthAnalysis({
       (a, b) => Number(a.week.replace(/\D/g, '')) - Number(b.week.replace(/\D/g, ''))
     );
 
-    const totalDays = filteredEntries.length; // 빈값 제외한 날짜 수
+    const totalDays = entries.length; // 빈값 제외한 날짜 수
 
     // 감정 비율 데이터 생성
     const emotionRatioData: EmotionRatioData[] = Object.entries(emotionCounts)
@@ -126,7 +131,7 @@ export default function MonthAnalysis({
       .filter((data) => data.value > 0); // 0% 데이터 제외
 
     return { weekHappinessData, emotionRatioData };
-  }, []);
+  }, [monthlyEmotionTimeline]);
 
   const CustomBar = (props: RectangleProps) => {
     const { x = 0, y = 0, width = 0, height = 0, fill } = props;
@@ -134,6 +139,9 @@ export default function MonthAnalysis({
 
     return <rect x={x} y={y - offsetY} width={width} height={height} fill={fill} rx={5} ry={5} />;
   };
+
+  const isMobile = useMediaQuery({ maxWidth: 768 }); // 모바일 조건
+  const isIphoneSE = useMediaQuery({ maxWidth: 376 });
 
   return (
     <div className="flex flex-col min-h-screen gap-5 px-4 mx-auto mb-[70px] sm:px-6 md:px-8">
@@ -170,7 +178,7 @@ export default function MonthAnalysis({
               데이터가 없습니다.
             </div>
           ) : (
-            <BarChart data={weekHappinessData}>
+            <BarChart data={weekHappinessData} margin={{ top: 30, right: 0, left: 0, bottom: 0 }}>
               <XAxis dataKey="week" />
               <Bar dataKey="happinessRate" barSize={30} shape={<CustomBar />} fill="#FFD939">
                 <LabelList
@@ -200,7 +208,7 @@ export default function MonthAnalysis({
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                outerRadius={90}
+                outerRadius={isIphoneSE ? 35 : isMobile ? 50 : 90}
                 label={({ name, value }: { name: EmotionType; value: number }) =>
                   `${name} ${value}%`
                 }

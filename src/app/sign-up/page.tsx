@@ -86,6 +86,7 @@ const Page = () => {
             <input
               type="password"
               {...register('password')}
+              autoComplete="new-password"
               className={`${inputStyle} ${errors.password ? 'border-red-400 text-red-400' : ''}`}
             />
             {errors.password && <p className={errorTextStlye}>{errors.password.message}</p>}
@@ -95,6 +96,7 @@ const Page = () => {
             <input
               type="password"
               {...register('confirmPassword')}
+              autoComplete="new-password"
               className={`${inputStyle} ${errors.confirmPassword ? 'border-red-400 text-red-400' : ''}`}
             />
             {errors.confirmPassword && (

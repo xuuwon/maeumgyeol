@@ -41,7 +41,7 @@ const Page = () => {
   const inputStyle =
     'h-9 border rounded-md w-80 bg-bg-yellow border-main-yellow focus:outline-none pl-2 text-[#909090]';
   const groupStyle = 'flex flex-col gap-3';
-  const errorTextStlye = 'text-sm text-red-400 mx-auto';
+  const errorTextStlye = 'text-sm text-red-400 mx-auto text-center';
 
   return (
     <div className="flex flex-col items-center justify-around h-screen px-4 py-16 iphoneSE:py-10 sm:px-6 md:px-8">
@@ -66,7 +66,12 @@ const Page = () => {
         </div>
         <div className={groupStyle}>
           <label>비밀번호</label>
-          <input type="password" {...register('password')} className={inputStyle} />
+          <input
+            type="password"
+            {...register('password')}
+            className={inputStyle}
+            autoComplete="new-password"
+          />
         </div>
 
         <div className="mx-auto mt-10">

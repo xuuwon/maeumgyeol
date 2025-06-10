@@ -78,11 +78,11 @@ const PageClient = ({ date }: { date: string }) => {
         return;
       }
 
-      // HighLevelContent 예시: sentence1 필드가 있으면 고레벨 콘텐츠로 간주
-      if ('sentence1' in content) {
+      const level = content.level;
+
+      if (level === 3) {
         router.push(`/contents/level3?id=${id}`);
       } else {
-        const level = content.level;
         if (level === 1) {
           router.push(`/contents/level1?id=${id}`);
         } else if (level === 2) {

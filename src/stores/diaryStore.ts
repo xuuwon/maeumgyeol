@@ -78,7 +78,7 @@ export const useDiaryStore = create<DiaryState>((set) => ({
 
       if (data.images_url.length !== 0) {
         data.images_url.forEach((file) => {
-          formData.append('images_files', file);
+          formData.append('image_files', file);
         });
       }
 

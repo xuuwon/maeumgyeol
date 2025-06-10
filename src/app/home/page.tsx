@@ -4,8 +4,10 @@ import Button from '@/components/button/Button';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
+import { useCalendarStore } from '@/stores/calendarStore';
+import { useContentStore } from '@/stores/contentStore';
 
 const Page = () => {
   const user = useAuthStore((state) => state.user);
@@ -25,6 +27,7 @@ const Page = () => {
 
   const todayDate = `${year}년 ${month + 1}월 ${day}일`;
   const todayDateFormatted = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  const formattedMonth = `${year}-${String(month + 1).padStart(2, '0')}`;
 
   const router = useRouter();
 
@@ -44,6 +47,78 @@ const Page = () => {
       bgUrl = equippedBackground;
     }
   }
+
+  // 일기 존재하는지 확인용
+  const { fetchEmotions } = useCalendarStore();
+  const { fetchContent } = useContentStore();
+
+  const [hasContent, setHasContent] = useState(false);
+  const [contentLevel, setContentLevel] = useState<number | null>(null);
+  const [diaryId, setDiaryId] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkTodayContent = async () => {
+      try {
+        setIsLoading(true);
+
+        // 1. 이 달의 감정 데이터를 가져옴
+        await fetchEmotions(formattedMonth);
+
+        // const hasDiary = !!useCalendarStore.getState().emotions[todayDateFormatted];
+        const emotionMap = useCalendarStore.getState().emotions;
+        console.log(emotionMap);
+        const todayEmotion = emotionMap[todayDateFormatted];
+
+        if (todayEmotion && todayEmotion.id) {
+          const currentDiaryId = todayEmotion.id;
+          setDiaryId(currentDiaryId);
+
+          // 2. 콘텐츠 가져오기 시도
+          const content = await fetchContent(currentDiaryId);
+
+          if (content) {
+            setHasContent(true);
+            setContentLevel(content.level);
+          }
+        } else {
+          console.log('오늘 감정 데이터 또는 diary_id가 없습니다.');
+        }
+      } catch (error) {
+        console.error('오늘 콘텐츠 확인 실패:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkTodayContent();
+  }, []);
+
+  // 말풍선 클릭 핸들러
+  const handleBubbleClick = async () => {
+    if (hasContent && diaryId) {
+      // 이미 작성된 콘텐츠 보기
+      if (contentLevel === 3) {
+        router.push(`/contents/level3?id=${diaryId}`);
+      } else if (contentLevel === 1) {
+        router.push(`/contents/level1?id=${diaryId}`);
+      } else if (contentLevel === 2) {
+        router.push(`/contents/level2?id=${diaryId}`);
+      }
+    } else {
+      // 새로운 콘텐츠 작성
+      router.push('/contents/level3');
+    }
+  };
+
+  // 말풍선 텍스트 결정
+  const getBubbleText = () => {
+    if (isLoading) return '확인 중...';
+    if (hasContent) {
+      return '오늘의 마음 챙김 콘텐츠를 확인해 봐! 🐾';
+    }
+    return '오늘의 일기를 작성해 봐! 🐾';
+  };
 
   return (
     <div
@@ -73,14 +148,16 @@ const Page = () => {
 
       <div className="z-10 flex flex-col items-center gap-3">
         <div
-          className="relative max-w-xs px-5 py-3 text-white cursor-pointer bg-main-yellow rounded-2xl"
-          onClick={() => {
-            router.push('/contents/level3');
-          }}
+          className={clsx(
+            'relative max-w-xs px-5 py-3 text-white cursor-pointer rounded-2xl bg-main-yellow'
+          )}
+          onClick={handleBubbleClick}
         >
-          오늘의 마음 챙김 콘텐츠를 확인해 봐!🐾
+          <p>{getBubbleText()}</p>
           {/* 꼬리 */}
-          <div className="absolute w-4 h-4 rotate-45 bg-main-yellow -bottom-2 left-16"></div>
+          <div
+            className={clsx('absolute w-4 h-4 rotate-45 -bottom-2 left-16 bg-main-yellow')}
+          ></div>
         </div>
         <Image
           src={equippedAccessory ? equippedAccessory : '/images/characters/basic_character.png'} // 예시
