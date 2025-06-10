@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-pwa-cache-v2'; // 버전 바꿈
+const CACHE_NAME = 'my-pwa-cache-v3'; // 버전 바꿈
 const urlsToCache = ['/'];
 
 self.addEventListener('install', (event) => {
