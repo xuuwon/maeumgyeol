@@ -15,7 +15,7 @@ const Header = ({ type = 'main' }: { type?: string }) => {
   const iconStyle = 'hover:text-[#ffad20] cursor-pointer';
 
   return (
-    <div className="absolute top-0 left-0 flex items-center justify-between w-full h-16 px-4 sm:px-6 md:px-8">
+    <div className="absolute top-0 left-0 z-10 flex items-center justify-between w-full h-16 px-4 sm:px-6 md:px-8">
       <div className="flex gap-3">
         <div>
           {type == 'main' ? (

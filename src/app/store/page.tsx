@@ -59,22 +59,6 @@ const Page = () => {
 
       {/* 아이템 리스트 */}
       <div className="relative w-full mt-auto h-full mb-[70px] bg-content-yellow overflow-y-scroll">
-        {/* {selectedItem && !selectedItem.equipped && (
-          <button
-            className="absolute px-4 py-2 mt-2 text-sm transform -translate-x-1/2 rounded-full shadow-md bottom-5 left-1/2 bg-main-yellow"
-            onClick={handleEquip}
-          >
-            적용하기
-          </button>
-        )}
-        {selectedItem && selectedItem.equipped && (
-          <button
-            className="absolute px-4 py-2 mt-2 text-sm transform -translate-x-1/2 rounded-full shadow-md bottom-5 left-1/2 bg-main-yellow"
-            onClick={handleUnequip}
-          >
-            해제하기
-          </button>
-        )} */}
         <div className="grid w-full grid-cols-2 gap-4 px-6 py-6">
           {filteredItems.map((item) => (
             <div
