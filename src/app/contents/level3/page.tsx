@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import Button from '@/components/button/Button';
 import { useContentStore } from '@/stores/contentStore';
 import clsx from 'clsx';
@@ -14,10 +14,15 @@ function Content() {
   const [thirdInput, setThirdInput] = useState('');
 
   const searchParams = useSearchParams();
-  const { saveContentBundle, isSaved } = useContentStore();
+  const { saveContentBundle, isSaved, highContents, fetchDetail } = useContentStore();
+
   const id = Number(searchParams.get('id'));
 
   const saved = isSaved[id] ?? false;
+
+  useEffect(() => {
+    fetchDetail(id);
+  }, []);
 
   const contentBundle = {
     level: 3,
@@ -83,7 +88,7 @@ function Content() {
               className={inputStyle}
               type="text"
               placeholder={`첫 번째 감사한 일은 무엇인가요?`}
-              value={firstInput}
+              value={highContents?.sentence1 ?? firstInput}
               onChange={(e) => setFirstInput(e.target.value)}
             />
           </div>
@@ -93,11 +98,13 @@ function Content() {
             <input
               className={clsx(
                 inputStyle,
-                firstInput.trim().length == 0 && 'bg-gray-200 cursor-not-allowed'
+                firstInput.trim().length == 0 && !highContents
+                  ? 'bg-gray-200 cursor-not-allowed'
+                  : ''
               )}
               type="text"
               placeholder={`두 번째 감사한 일은 무엇인가요?`}
-              value={secondInput}
+              value={highContents?.sentence2 ?? secondInput}
               onChange={(e) => setSecondInput(e.target.value)}
               disabled={firstInput.trim().length === 0}
             />
@@ -108,11 +115,13 @@ function Content() {
             <input
               className={clsx(
                 inputStyle,
-                secondInput.trim().length == 0 && 'bg-gray-200 cursor-not-allowed'
+                secondInput.trim().length == 0 && !highContents
+                  ? 'bg-gray-200 cursor-not-allowed'
+                  : ''
               )}
               type="text"
               placeholder={`세 번째 감사한 일은 무엇인가요?`}
-              value={thirdInput}
+              value={highContents?.sentence3 ?? thirdInput}
               onChange={(e) => setThirdInput(e.target.value)}
               disabled={secondInput.trim().length === 0}
             />
